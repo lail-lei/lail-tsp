@@ -95,10 +95,15 @@ const nodes = [
 
 
 describe('simple test', () => {
-    it('floorplan 1, start: 25,5 end: 0,49', () => {
+    it('floorplan 1, start: 25,5 end: 0,49, greedy path', () => {
         const tsp = new TSP(nodes, floorplan, new PathNode(0, 0), new PathNode(25, 49));
         tsp.init();
         const { path, estimatedCost } = tsp.nearestNeighborInsertion();
-        console.log(path?.map((node: PathNode) => `${node.x},${node.y}`));
+    })
+
+    it('floorplan 1, start: 25,5 end: 0,49, christofides', () => {
+        const tsp = new TSP(nodes, floorplan, new PathNode(0, 0), new PathNode(25, 49));
+        tsp.init();
+        const { path, estimatedCost } = tsp.christofides();
     })
 });
