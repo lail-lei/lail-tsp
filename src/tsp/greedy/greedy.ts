@@ -1,4 +1,3 @@
-
 export class GreedyHeuristics {
     distances: Matrix;
 
@@ -6,10 +5,10 @@ export class GreedyHeuristics {
         this.distances = distances;
     }
 
-    nearestNeighborInsertionPath = () => {
+    nearestNeighborInsertionPath = (): number[] => {
 
-        const stack: Array<number> = [2];
-        const path: Array<number> = [0, 1];
+        const stack: number[] = [2];
+        const path: number[] = [0, 1];
         const visited = new Set<number>([0, 1]);
 
         const findNearestNeighborIndex = (vertex: number) => {
