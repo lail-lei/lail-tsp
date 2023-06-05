@@ -1,5 +1,6 @@
 import { AStar, PathNode } from "lail-star"
-import { GreedyHeuristics } from "./greedy/greedy";
+import { GreedyHeuristics } from "./greedy";
+import { MSTHeuristics } from "./mst";
 
 export class TSP {
     nodes: PathNode[];
@@ -12,11 +13,10 @@ export class TSP {
     // contains predetermined start, end + dummy nodes
     allNodes: PathNode[];
     greedy?: GreedyHeuristics;
+    mst?: MSTHeuristics;
 
 
     constructor(nodes: PathNode[], floorplan: Matrix, start: PathNode, end: PathNode) {
-        if (nodes.length > 35) throw new Error('node list length exceeds parameters. node list must container 35 or fewer elements')
-
         this.floorPlan = floorplan;
         this.start = start;
         this.end = end;
@@ -33,6 +33,7 @@ export class TSP {
     init = () => {
         this.calculateDistances();
         this.greedy = new GreedyHeuristics(this.costMatrix);
+        this.mst = new MSTHeuristics(this.costMatrix);
     }
 
 
@@ -82,4 +83,10 @@ export class TSP {
         return { path: this.removeDummyNodeAndReverse(transformed), estimatedCost: this.estimateTotalPathCost(rawPath) };
     }
 
+    christofides = (): PathResult => {
+        if (this.mst === undefined) throw new Error('must call TSP.init() before calculating paths');
+        const rawPath = this.mst.christofides();
+        const transformed = this.transformRawPath(rawPath);
+        return { path: this.removeDummyNodeAndReverse(transformed), estimatedCost: this.estimateTotalPathCost(rawPath) };
+    }
 }

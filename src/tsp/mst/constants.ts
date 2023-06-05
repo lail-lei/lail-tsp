@@ -1,0 +1,4 @@
+export enum EdgeSort {
+    BY_WEIGHT = "BY_WEIGHT",
+    PRIORITIZE_LEAF_NODES = "PRIORITIZE_LEAF_NODES",
+}
