@@ -1,8 +1,9 @@
 {
-  "name": "lail-tsp",
-  "version": "1.0.0",
+  "name": "lail-tsp-solutions",
+  "version": "1.0.14",
   "description": "heuristic solutions for traveling salesperson problem",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
     "lib/**/*"
   ],
@@ -31,7 +32,6 @@
   },
   "homepage": "https://github.com/lail-lei/lail-tsp#readme",
   "devDependencies": {
-    "@types/edmonds-blossom": "^1.0.2",
     "@types/jest": "^29.5.2",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
@@ -42,7 +42,8 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "edmonds-blossom": "^1.0.0",
-    "lail-star": "^1.0.3"
+    "edmonds-blossom-fixed": "^1.0.1",
+    "lail-astar": "^1.0.5",
+    "npm": "^9.6.7"
   }
 }
