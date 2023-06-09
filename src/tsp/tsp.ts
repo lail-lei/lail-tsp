@@ -19,6 +19,7 @@ export class TSP {
   allNodes: PathNode[];
   greedy?: GreedyHeuristics;
   mst?: MSTHeuristics;
+  error?: string;
 
   constructor(nodes: PathNode[], floorplan: Matrix, start: PathNode, end: PathNode) {
     this.floorPlan = floorplan;
@@ -50,7 +51,21 @@ export class TSP {
     for (let r = 1; r < this.allNodes.length; r++) {
       for (let c = 1; c < this.allNodes.length; c++) {
         if (r === c) this.costMatrix[r][c] = 0;
-        else this.costMatrix[r][c] = aStar.search(this.allNodes[r], this.allNodes[c], false).minCost;
+        else {
+
+          const start = this.allNodes[r];
+          const end = this.allNodes[c];
+          const distance = aStar.search(start, end, false).minCost;
+
+          if (distance === Infinity) {
+            const unreacahbleError = `Unreachable location encountered. Unable to travel from ${start.uid} to ${end.uid}`;
+            this.error = unreacahbleError;
+            throw new Error(unreacahbleError);
+          }
+
+          else this.costMatrix[r][c] = distance;
+        }
+
       }
     }
   };
@@ -58,6 +73,7 @@ export class TSP {
   transformRawPath = (rawPath: number[]): PathNode[] => rawPath.map((index: number) => this.allNodes[index]);
 
   estimateTotalPathCost = (rawPath: number[]): number => {
+    if (this.error) throw new Error(this.error);
     let sum = 0;
     for (let i = 0; i < rawPath.length - 2; i++) {
       const vertexA = rawPath[i];
@@ -69,11 +85,13 @@ export class TSP {
   };
 
   removeDummyNodeAndReverse = (path: PathNode[]) => {
+    if (this.error) throw new Error(this.error);
     const filtered = path.slice(2);
     return [...filtered, path[1]];
   };
 
   nearestNeighborInsertion = (): PathResult => {
+    if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestNeighborInsertionPath();
     const transformed = this.transformRawPath(rawPath);
@@ -81,6 +99,7 @@ export class TSP {
   };
 
   christofides = (): PathResult => {
+    if (this.error) throw new Error(this.error);
     if (this.mst === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.mst.christofides();
     const transformed = this.transformRawPath(rawPath);

@@ -80,7 +80,7 @@ describe('integration', () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]
 
-  it('passes failed test', () => {
+  it('throws error if encounters unreachable node', () => {
     const locations = [
       'M09',
       'L02',
@@ -98,41 +98,32 @@ describe('integration', () => {
       'M37',
       'C14',
     ];
-    const start = createPathNode('12,19', LocationType.COORDINATE);
-    const end = createPathNode('25,6', LocationType.COORDINATE);
+    const start = createPathNode('A01', LocationType.ALPHANUMERIC);
+    const end = createPathNode('Z49', LocationType.ALPHANUMERIC);
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
     const tsp = new TSP(nodes, floorplan, start, end);
-    tsp.init();
-    const result = tsp.christofides();
+    expect(() => { tsp.init() }).toThrowError(`Unreachable location encountered. Unable to travel from A01 to L02`)
+
   });
 
 
   it('passes failed test 2', () => {
     const locations = [
       'Q05',
-      'E01',
-      'E08',
       'W07',
       'G21',
       'Q21',
       'R17',
       'I13',
       'P11',
-      'E04',
     ]
-
     const start = createPathNode('12,19', LocationType.COORDINATE);
     const end = createPathNode('25,6', LocationType.COORDINATE);
-
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
-
     const tsp = new TSP(nodes, floorplan2, start, end);
     tsp.init();
-
-    console.log(tsp.costMatrix);
-
-    // const result = tsp.christofides();
-    // console.log(result);
+    const result = tsp.christofides();
+    console.log(result);
   });
 });
 
