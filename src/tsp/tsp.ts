@@ -52,7 +52,6 @@ export class TSP {
       for (let c = 1; c < this.allNodes.length; c++) {
         if (r === c) this.costMatrix[r][c] = 0;
         else {
-
           const start = this.allNodes[r];
           const end = this.allNodes[c];
           const distance = aStar.search(start, end, false).minCost;
@@ -61,11 +60,8 @@ export class TSP {
             const unreacahbleError = `Unreachable location encountered. Unable to travel from ${start.uid} to ${end.uid}`;
             this.error = unreacahbleError;
             throw new Error(unreacahbleError);
-          }
-
-          else this.costMatrix[r][c] = distance;
+          } else this.costMatrix[r][c] = distance;
         }
-
       }
     }
   };
