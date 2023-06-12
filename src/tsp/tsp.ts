@@ -1,7 +1,6 @@
 import { AStar, PathNode, Matrix } from 'lail-astar';
 import { GreedyHeuristics } from './greedy';
 import { MSTHeuristics } from './mst';
-import { sumPathCost } from './util';
 
 export interface PathResult {
   path: PathNode[];
@@ -54,7 +53,7 @@ export class TSP {
           const distance = aStar.search(start, end, false).minCost;
 
           if (distance === Infinity) {
-            const unreacahbleError = `Unreachable location encountered. Unable to travel from ${start.uid} to ${end.uid}`;
+            const unreacahbleError = `Unreachable location encountered.`;
             this.error = unreacahbleError;
             throw new Error(unreacahbleError);
           } else this.costMatrix[r][c] = distance;
@@ -84,7 +83,16 @@ export class TSP {
 
   estimateTotalPathCost = (rawPath: number[]): number => {
     if (this.error) throw new Error(this.error);
-    return sumPathCost(rawPath, this.costMatrix);
+    if (rawPath.length === 1) return rawPath[0];
+
+    let sum = 0;
+    for (let i = 0; i < rawPath.length - 2; i++) {
+      const vertexA = rawPath[i];
+      const vertexB = rawPath[i + 1];
+      const cost = this.costMatrix[vertexA][vertexB];
+      sum += cost;
+    }
+    return sum;
   };
 
   removeDummyNode = (path: PathNode[]) => {
