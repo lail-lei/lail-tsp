@@ -97,7 +97,7 @@ describe('simple test', () => {
     const tsp = new TSP(nodes, floorplan, new PathNode(0, 0), new PathNode(25, 49));
     tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { path, estimatedCost } = tsp.nearestNeighborInsertion();
+    const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
 
   it('floorplan 1, start: 25,5 end: 0,49, christofides', () => {
