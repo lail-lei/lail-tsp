@@ -116,4 +116,14 @@ describe('integration', () => {
     const result = tsp.christofides();
     console.log(result);
   });
+
+  it('passes failed test 2', () => {
+    const locations = ['Q05', 'W07', 'G21', 'Q21', 'R17', 'I13', 'P11'];
+    const start = createPathNode('12,19', LocationType.COORDINATE);
+    const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
+    const tsp = new TSP(nodes, floorplan2, start);
+    tsp.init();
+    const result = tsp.christofides();
+    console.log(result);
+  });
 });

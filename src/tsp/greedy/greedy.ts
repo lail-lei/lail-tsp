@@ -1,14 +1,27 @@
 export class GreedyHeuristics {
   distances: Matrix;
+  isHamiltonianPath: boolean;
 
-  constructor(distances: Matrix) {
+  constructor(distances: Matrix, isHamiltonianPath: boolean) {
     this.distances = distances;
+    this.isHamiltonianPath = isHamiltonianPath;
   }
 
   nearestNeighborInsertionPath = (): number[] => {
-    const stack: number[] = [2];
-    const path: number[] = [0, 1];
-    const visited = new Set<number>([0, 1]);
+    const stack: number[] = []
+    const path: number[] = [];
+    const visited = new Set<number>();
+
+    if (this.isHamiltonianPath) {
+      stack.push(2);
+      path.push(0, 1);
+      visited.add(0);
+      visited.add(1);
+    }
+
+    else {
+      stack.push(0);
+    }
 
     const findNearestNeighborIndex = (vertex: number) => {
       let min = Infinity;
