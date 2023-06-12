@@ -104,7 +104,7 @@ describe('simple test', () => {
     const tsp = new TSP(nodes, floorplan, new PathNode(0, 0), new PathNode(25, 49));
     tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { path, estimatedCost } = tsp.nearestInsertionPath()
+    const { path, estimatedCost } = tsp.farthestInsertionPath();
     console.log(path);
   });
 

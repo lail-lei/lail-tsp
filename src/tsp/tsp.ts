@@ -66,7 +66,7 @@ export class TSP {
   calculateDistances = () => {
     // hamiltonian path may require dummy node for mst solutions
     if (this.isHamiltonianPathProblem()) {
-      // no need to compute the distances for the dummy node
+      // no need to compute all distances for the dummy node (index 0)
       this.computeCostMatrix(1, 1);
       // handle the distances between the dummy nodes and the defined start and end nodes
       this.costMatrix[0][0] = 0;
@@ -111,7 +111,6 @@ export class TSP {
 
 
   nearestInsertionPath = (): PathResult => {
-    console.log(this.allNodes)
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestInsertionPath();
