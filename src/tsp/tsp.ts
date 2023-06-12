@@ -22,7 +22,19 @@ export class TSP {
   error?: string;
   distanceHeuristic?: DistanceHeuristic;
 
-  constructor({ nodes, floorplan, start, end, distanceHeuristic }: { nodes: PathNode[], floorplan: Matrix, start: PathNode, end?: PathNode, distanceHeuristic?: DistanceHeuristic }) {
+  constructor({
+    nodes,
+    floorplan,
+    start,
+    end,
+    distanceHeuristic,
+  }: {
+    nodes: PathNode[];
+    floorplan: Matrix;
+    start: PathNode;
+    end?: PathNode;
+    distanceHeuristic?: DistanceHeuristic;
+  }) {
     this.floorPlan = floorplan;
     this.start = start;
     this.end = end ? end : null;

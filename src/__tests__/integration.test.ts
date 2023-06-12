@@ -100,7 +100,7 @@ describe('integration', () => {
     const start = createPathNode('A01', LocationType.ALPHANUMERIC);
     const end = createPathNode('L02', LocationType.ALPHANUMERIC);
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
-    const tsp = new TSP(nodes, floorplan, start, end);
+    const tsp = new TSP({ nodes, floorplan, start, end });
     expect(() => {
       tsp.init();
     }).toThrowError(`Unreachable location encountered.`);
@@ -111,7 +111,7 @@ describe('integration', () => {
     const start = createPathNode('12,19', LocationType.COORDINATE);
     const end = createPathNode('25,6', LocationType.COORDINATE);
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
-    const tsp = new TSP(nodes, floorplan2, start, end);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start, end });
     tsp.init();
     tsp.christofides();
   });
@@ -120,7 +120,7 @@ describe('integration', () => {
     const locations = ['Q05', 'W07', 'G21', 'Q21', 'R17', 'I13', 'P11'];
     const start = createPathNode('12,19', LocationType.COORDINATE);
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
-    const tsp = new TSP(nodes, floorplan2, start);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     tsp.init();
     tsp.christofides();
   });
