@@ -26,7 +26,8 @@ export class TSP {
     this.start = start;
     this.end = end ? end : null;
     this.nodes = nodes;
-    this.allNodes = end && this.isHamiltonianPathProblem() ? [new PathNode(-1, -1), start, end, ...nodes] : [start, ...nodes];
+    this.allNodes =
+      end && this.isHamiltonianPathProblem() ? [new PathNode(-1, -1), start, end, ...nodes] : [start, ...nodes];
     this.costMatrix = new Array(this.allNodes.length)
       .fill(false)
       .map(() => new Array(this.allNodes.length).fill(Infinity));
@@ -59,10 +60,9 @@ export class TSP {
         }
       }
     }
-  }
+  };
 
   calculateDistances = () => {
-
     // hamiltonian path may require dummy node for mst solutions
     if (this.isHamiltonianPathProblem()) {
       // handle the distances between the dummy nodes and the defined start and end nodes
@@ -71,10 +71,8 @@ export class TSP {
       this.costMatrix[0][2] = -1;
       this.costMatrix[1][0] = -1;
       this.costMatrix[2][0] = -1;
-      this.computeCostMatrix(1, 1)
-    }
-
-    else this.computeCostMatrix(0, 0);
+      this.computeCostMatrix(1, 1);
+    } else this.computeCostMatrix(0, 0);
   };
 
   transformRawPath = (rawPath: number[]): PathNode[] => rawPath.map((index: number) => this.allNodes[index]);
@@ -101,14 +99,16 @@ export class TSP {
   connectBackToStart = (path: PathNode[]) => {
     if (this.error) throw new Error(this.error);
     return [...path, this.start];
-  }
+  };
 
   nearestNeighborPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestNeighborPath();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : this.connectBackToStart(transformed);
+    const path = this.isHamiltonianPathProblem()
+      ? this.convertToHamiltonianPath(transformed)
+      : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
 
@@ -117,7 +117,9 @@ export class TSP {
     if (this.mst === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.mst.christofides();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : this.connectBackToStart(transformed);
+    const path = this.isHamiltonianPathProblem()
+      ? this.convertToHamiltonianPath(transformed)
+      : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
 }

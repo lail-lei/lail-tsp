@@ -8,7 +8,7 @@ export class GreedyHeuristics {
   }
 
   nearestNeighborPath = (): number[] => {
-    const stack: number[] = []
+    const stack: number[] = [];
     const path: number[] = [];
     const visited = new Set<number>();
 
@@ -17,9 +17,7 @@ export class GreedyHeuristics {
       path.push(0, 1);
       visited.add(0);
       visited.add(1);
-    }
-
-    else {
+    } else {
       stack.push(0);
     }
 
