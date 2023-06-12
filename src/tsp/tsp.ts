@@ -76,7 +76,6 @@ export class TSP {
       this.costMatrix[2][0] = -1;
       this.costMatrix[1][2] = Infinity;
       this.costMatrix[2][1] = Infinity;
-
     } else this.computeCostMatrix(0, 0);
   };
 
