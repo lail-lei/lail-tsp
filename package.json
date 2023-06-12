@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "edmonds-blossom-fixed": "^1.0.1",
-    "lail-astar": "^1.0.5",
+    "lail-astar": "^1.1.0",
     "npm": "^9.6.7"
   }
 }
