@@ -1,4 +1,4 @@
-import { AStar, PathNode, Matrix } from 'lail-astar';
+import { AStar, PathNode, Matrix, DistanceHeuristic } from 'lail-astar';
 import { GreedyHeuristics } from './greedy';
 import { MSTHeuristics } from './mst';
 
@@ -20,11 +20,13 @@ export class TSP {
   greedy?: GreedyHeuristics;
   mst?: MSTHeuristics;
   error?: string;
+  distanceHeuristic?: DistanceHeuristic;
 
-  constructor(nodes: PathNode[], floorplan: Matrix, start: PathNode, end?: PathNode) {
+  constructor({ nodes, floorplan, start, end, distanceHeuristic }: { nodes: PathNode[], floorplan: Matrix, start: PathNode, end?: PathNode, distanceHeuristic?: DistanceHeuristic }) {
     this.floorPlan = floorplan;
     this.start = start;
     this.end = end ? end : null;
+    this.distanceHeuristic = distanceHeuristic;
     this.nodes = nodes;
     this.allNodes =
       end && this.isHamiltonianPathProblem() ? [new PathNode(-1, -1), start, end, ...nodes] : [start, ...nodes];
@@ -50,7 +52,7 @@ export class TSP {
         else {
           const start = this.allNodes[r];
           const end = this.allNodes[c];
-          const distance = aStar.search(start, end, false).minCost;
+          const distance = aStar.search(start, end, false, this.distanceHeuristic).minCost;
 
           if (distance === Infinity) {
             const unreacahbleError = `Unreachable location encountered.`;
