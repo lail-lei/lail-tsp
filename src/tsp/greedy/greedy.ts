@@ -1,5 +1,4 @@
 import { Edge } from "../mst/mst";
-import { sumPathCost } from "../util";
 
 export class GreedyHeuristics {
   distances: Matrix;
@@ -101,7 +100,7 @@ export class GreedyHeuristics {
       for (let i = 0; i < path.length - 1; i++)
         edges.push({ vertexA: path[i], vertexB: path[i + 1], weight: this.distances[path[i]][path[i + 1]] })
 
-      let min: number = Infinity;
+      let min = Infinity;
       let replaceEdge: Edge | null = null;
 
       edges.forEach((edge: Edge) => {
