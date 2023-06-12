@@ -114,7 +114,6 @@ describe('integration', () => {
     const tsp = new TSP(nodes, floorplan2, start, end);
     tsp.init();
     const result = tsp.christofides();
-    console.log(result);
   });
 
   it('passes failed test 2', () => {
@@ -124,6 +123,5 @@ describe('integration', () => {
     const tsp = new TSP(nodes, floorplan2, start);
     tsp.init();
     const result = tsp.christofides();
-    console.log(result);
   });
 });

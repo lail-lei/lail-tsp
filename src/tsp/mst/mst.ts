@@ -1,7 +1,7 @@
 import { EdgeSort } from './constants';
 import blossom = require('edmonds-blossom-fixed');
 
-interface Edge {
+export interface Edge {
   vertexA: number;
   vertexB: number;
   weight: number;

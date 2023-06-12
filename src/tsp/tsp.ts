@@ -1,6 +1,7 @@
 import { AStar, PathNode, Matrix } from 'lail-astar';
 import { GreedyHeuristics } from './greedy';
 import { MSTHeuristics } from './mst';
+import { sumPathCost } from './util';
 
 export interface PathResult {
   path: PathNode[];
@@ -83,19 +84,11 @@ export class TSP {
 
   estimateTotalPathCost = (rawPath: number[]): number => {
     if (this.error) throw new Error(this.error);
-    let sum = 0;
-    for (let i = 0; i < rawPath.length - 2; i++) {
-      const vertexA = rawPath[i];
-      const vertexB = rawPath[i + 1];
-      const cost = this.costMatrix[vertexA][vertexB];
-      sum += cost;
-    }
-    return sum;
+    return sumPathCost(rawPath, this.costMatrix);
   };
 
-  convertToHamiltonianPath = (path: PathNode[]) => {
+  removeDummyNode = (path: PathNode[]) => {
     if (this.error) throw new Error(this.error);
-    // remove dummy node (index 0) and reverse
     const filtered = path.slice(2);
     return [...filtered, path[1]];
   };
@@ -111,10 +104,35 @@ export class TSP {
     const rawPath = this.greedy.nearestNeighborPath();
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem()
-      ? this.convertToHamiltonianPath(transformed)
+      ? transformed
       : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
+
+
+  nearestInsertionPath = (): PathResult => {
+    console.log(this.allNodes)
+    if (this.error) throw new Error(this.error);
+    if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
+    const rawPath = this.greedy.nearestInsertionPath();
+    const transformed = this.transformRawPath(rawPath);
+    const path = this.isHamiltonianPathProblem()
+      ? transformed
+      : this.connectBackToStart(transformed);
+    return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+  };
+
+  farthestInsertionPath = (): PathResult => {
+    if (this.error) throw new Error(this.error);
+    if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
+    const rawPath = this.greedy.farthestInsertionPath();
+    const transformed = this.transformRawPath(rawPath);
+    const path = this.isHamiltonianPathProblem()
+      ? transformed
+      : this.connectBackToStart(transformed);
+    return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+  };
+
 
   christofides = (): PathResult => {
     if (this.error) throw new Error(this.error);
@@ -122,7 +140,7 @@ export class TSP {
     const rawPath = this.mst.christofides();
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem()
-      ? this.convertToHamiltonianPath(transformed)
+      ? this.removeDummyNode(transformed)
       : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
