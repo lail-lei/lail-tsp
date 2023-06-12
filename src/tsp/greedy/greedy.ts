@@ -7,7 +7,7 @@ export class GreedyHeuristics {
     this.isHamiltonianPath = isHamiltonianPath;
   }
 
-  nearestNeighborInsertionPath = (): number[] => {
+  nearestNeighborPath = (): number[] => {
     const stack: number[] = []
     const path: number[] = [];
     const visited = new Set<number>();

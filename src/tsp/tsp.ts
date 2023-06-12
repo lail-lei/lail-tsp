@@ -98,10 +98,10 @@ export class TSP {
     return [...filtered, path[1]];
   };
 
-  nearestNeighborInsertion = (): PathResult => {
+  nearestNeighborPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
-    const rawPath = this.greedy.nearestNeighborInsertionPath();
+    const rawPath = this.greedy.nearestNeighborPath();
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : transformed;
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
