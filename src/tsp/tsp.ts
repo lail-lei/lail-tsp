@@ -103,21 +103,16 @@ export class TSP {
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestNeighborPath();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem()
-      ? transformed
-      : this.connectBackToStart(transformed);
+    const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
-
 
   nearestInsertionPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestInsertionPath();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem()
-      ? transformed
-      : this.connectBackToStart(transformed);
+    const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
 
@@ -126,12 +121,9 @@ export class TSP {
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.farthestInsertionPath();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem()
-      ? transformed
-      : this.connectBackToStart(transformed);
+    const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
-
 
   christofides = (): PathResult => {
     if (this.error) throw new Error(this.error);
