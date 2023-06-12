@@ -98,12 +98,17 @@ export class TSP {
     return [...filtered, path[1]];
   };
 
+  connectBackToStart = (path: PathNode[]) => {
+    if (this.error) throw new Error(this.error);
+    return [...path, this.start];
+  }
+
   nearestNeighborPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.greedy.nearestNeighborPath();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : transformed;
+    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
 
@@ -112,7 +117,7 @@ export class TSP {
     if (this.mst === undefined) throw new Error('must call TSP.init() before calculating paths');
     const rawPath = this.mst.christofides();
     const transformed = this.transformRawPath(rawPath);
-    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : transformed;
+    const path = this.isHamiltonianPathProblem() ? this.convertToHamiltonianPath(transformed) : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
   };
 }
