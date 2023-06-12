@@ -65,13 +65,18 @@ export class TSP {
   calculateDistances = () => {
     // hamiltonian path may require dummy node for mst solutions
     if (this.isHamiltonianPathProblem()) {
+      // no need to compute the distances for the dummy node
+      this.computeCostMatrix(1, 1);
       // handle the distances between the dummy nodes and the defined start and end nodes
       this.costMatrix[0][0] = 0;
       this.costMatrix[0][1] = -1;
       this.costMatrix[0][2] = -1;
+      // override start and end node distances
       this.costMatrix[1][0] = -1;
       this.costMatrix[2][0] = -1;
-      this.computeCostMatrix(1, 1);
+      this.costMatrix[1][2] = Infinity;
+      this.costMatrix[2][1] = Infinity;
+
     } else this.computeCostMatrix(0, 0);
   };
 
