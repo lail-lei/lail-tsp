@@ -114,7 +114,6 @@ describe('simple test', () => {
     const { path, estimatedCost } = tsp.farthestInsertionPath();
   });
 
-
   it('floorplan 1, start: 25,5, christofides', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0) });
     tsp.init();

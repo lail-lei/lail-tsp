@@ -40,8 +40,7 @@ export class TSP {
     this.end = end ? end : null;
     this.distanceHeuristic = distanceHeuristic;
     this.nodes = nodes;
-    this.allNodes =
-      end && this.isHamiltonianPathProblem() ? [start, end, ...nodes] : [start, ...nodes];
+    this.allNodes = end && this.isHamiltonianPathProblem() ? [start, end, ...nodes] : [start, ...nodes];
     this.costMatrix = new Array(this.allNodes.length)
       .fill(false)
       .map(() => new Array(this.allNodes.length).fill(Infinity));
