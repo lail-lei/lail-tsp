@@ -114,7 +114,7 @@ export class TSP {
     return [...path, this.start];
   };
 
-  computePath = (computePath: Function): PathResult => {
+  computePath = (computePath: () => number[]): PathResult => {
     const rawPath = computePath();
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
