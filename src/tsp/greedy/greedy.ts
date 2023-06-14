@@ -41,6 +41,7 @@ export class GreedyHeuristics {
     const visited = new Set<number>();
 
     if (this.isHamiltonianPath) {
+      // start at 2 to ensure first and last node do not connect
       stack.push(2);
       path.push(1);
       // ignore dummy node
@@ -61,7 +62,10 @@ export class GreedyHeuristics {
       stack.push(next);
     }
 
-    return path;
+    if (!this.isHamiltonianPath) return path;
+
+    // move start node to end of path, and reverse
+    return [...path.slice(1), 1].reverse()
   };
 
   insertionPath = (nearest: boolean): number[] => {

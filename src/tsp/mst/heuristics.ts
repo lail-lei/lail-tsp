@@ -4,9 +4,11 @@ import { MST } from './mst';
 export class MSTHeuristics {
   distances: Matrix;
   mst: MST;
+  isHamiltonianPath: boolean;
 
-  constructor(distances: Matrix) {
+  constructor(distances: Matrix, isHamiltonianPath?: boolean) {
     this.distances = distances;
+    this.isHamiltonianPath = !!isHamiltonianPath;
     this.mst = new MST(this.distances);
     this.mst.prims();
   }
@@ -34,6 +36,9 @@ export class MSTHeuristics {
     const tour = this.mst.findEulerianTour(tree);
     // create hamiltonian path from tour
     const path = this.mst.createHamiltonianPath(tour);
-    return path;
+    if (!this.isHamiltonianPath) return path;
+
+    // move start node to end of path, and reverse
+    return [...path.slice(2), 1].reverse()
   };
 }
