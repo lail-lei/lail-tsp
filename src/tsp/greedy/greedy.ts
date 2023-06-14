@@ -90,7 +90,6 @@ export class GreedyHeuristics {
       visited.add(next);
     }
 
-
     const findEdgeToReplace = (path: number[], newNeighbor: number): Edge | null => {
       const computeIncreaseInPathLength = (edge: Edge, newNode: number) => {
         const costNewToA = this.distances[edge.vertexA][newNode];
