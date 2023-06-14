@@ -143,7 +143,7 @@ export class TSP {
       if (nodeA.uid && nodeB.uid) return nodeA.uid.localeCompare(nodeB.uid);
       return nodeA.gridId.localeCompare(nodeB.gridId);
     });
-    const path = this.end ? [this.start, ...sorted, this.end] : [this.start, ...sorted];
+    const path = this.end && this.isHamiltonianPathProblem() ? [this.start, ...sorted, this.end] : [this.start, ...sorted, this.start];
     const rawPath = path.map((node: PathNode) =>
       this.allNodes.findIndex((current: PathNode) => current.uid === node.uid),
     );
