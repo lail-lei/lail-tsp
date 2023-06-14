@@ -115,6 +115,7 @@ export class TSP {
   };
 
   computePath = (computePath: () => number[]): PathResult => {
+    // todo - if list is sufficiently short, return list without computing
     const rawPath = computePath();
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);

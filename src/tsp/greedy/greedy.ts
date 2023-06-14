@@ -119,6 +119,7 @@ export class GreedyHeuristics {
     while (visited.size < this.distances.length) {
       const candidates: number[] = path
         .map((node: number) => getNextBestNeighbor(node))
+        // todo - should be sorting by distance
         .sort((a: number, b: number) => a - b);
       const nextBest: number = nearest ? candidates[0] : candidates[candidates.length - 1];
       const replaceEdge = findEdgeToReplace(path, nextBest);

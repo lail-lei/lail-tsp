@@ -14,6 +14,7 @@ export class MSTHeuristics {
   }
 
   christofides = (): number[] => {
+    // todo- there's likely a bug in this
     // find MST tree
     const tree = this.mst.convertEdgePathToTree({
       path: this.mst.mstEdges,
