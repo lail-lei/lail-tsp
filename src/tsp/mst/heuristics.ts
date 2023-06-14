@@ -37,9 +37,6 @@ export class MSTHeuristics {
     const tour = this.mst.findEulerianTour(tree);
     // create hamiltonian path from tour
     const path = this.mst.createHamiltonianPath(tour);
-    if (!this.isHamiltonianPath) return path;
-
-    // move start node to end of path, and reverse
-    return [...path.slice(2), 1].reverse();
+    return path;
   };
 }

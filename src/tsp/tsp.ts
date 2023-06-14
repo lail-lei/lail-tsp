@@ -41,7 +41,7 @@ export class TSP {
     this.distanceHeuristic = distanceHeuristic;
     this.nodes = nodes;
     this.allNodes =
-      end && this.isHamiltonianPathProblem() ? [new PathNode(-1, -1), start, end, ...nodes] : [start, ...nodes];
+      end && this.isHamiltonianPathProblem() ? [start, end, ...nodes] : [start, ...nodes];
     this.costMatrix = new Array(this.allNodes.length)
       .fill(false)
       .map(() => new Array(this.allNodes.length).fill(Infinity));
@@ -77,20 +77,12 @@ export class TSP {
   };
 
   calculateDistances = () => {
-    // hamiltonian path may require dummy node for mst solutions
+    this.computeCostMatrix(0, 0);
+    // hamiltonian path problem requires a specified start and end
     if (this.isHamiltonianPathProblem()) {
-      // no need to compute all distances for the dummy node (index 0)
-      this.computeCostMatrix(1, 1);
-      // handle the distances between the dummy nodes and the defined start and end nodes
-      this.costMatrix[0][0] = 0;
-      this.costMatrix[0][1] = -1;
-      this.costMatrix[0][2] = -1;
-      // override start and end node distances
-      this.costMatrix[1][0] = -1;
-      this.costMatrix[2][0] = -1;
-      this.costMatrix[1][2] = Infinity;
-      this.costMatrix[2][1] = Infinity;
-    } else this.computeCostMatrix(0, 0);
+      this.costMatrix[0][1] = Infinity;
+      this.costMatrix[1][0] = Infinity;
+    }
   };
 
   transformRawPath = (rawPath: number[]): PathNode[] => rawPath.map((index: number) => this.allNodes[index]);
@@ -143,6 +135,7 @@ export class TSP {
   christofides = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.mst === undefined) throw new Error('must call TSP.init() before calculating paths');
+    if (this.isHamiltonianPathProblem()) throw new Error('Christofides requires a complete graph to work');
     return this.computePath(this.mst.christofides);
   };
 }
