@@ -142,9 +142,11 @@ export class TSP {
     const sorted = this.nodes.sort((nodeA: PathNode, nodeB: PathNode) => {
       if (nodeA.uid && nodeB.uid) return nodeA.uid.localeCompare(nodeB.uid);
       return nodeA.gridId.localeCompare(nodeB.gridId);
-    })
+    });
     const path = this.end ? [this.start, ...sorted, this.end] : [this.start, ...sorted];
-    const rawPath = path.map((node: PathNode) => this.allNodes.findIndex((current: PathNode) => current.uid === node.uid));
+    const rawPath = path.map((node: PathNode) =>
+      this.allNodes.findIndex((current: PathNode) => current.uid === node.uid),
+    );
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
-  }
+  };
 }
