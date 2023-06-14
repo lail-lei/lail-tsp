@@ -39,6 +39,6 @@ export class MSTHeuristics {
     if (!this.isHamiltonianPath) return path;
 
     // move start node to end of path, and reverse
-    return [...path.slice(2), 1].reverse()
+    return [...path.slice(2), 1].reverse();
   };
 }

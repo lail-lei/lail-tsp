@@ -65,7 +65,7 @@ export class GreedyHeuristics {
     if (!this.isHamiltonianPath) return path;
 
     // move start node to end of path, and reverse
-    return [...path.slice(1), 1].reverse()
+    return [...path.slice(1), 1].reverse();
   };
 
   insertionPath = (nearest: boolean): number[] => {

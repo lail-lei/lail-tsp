@@ -119,24 +119,24 @@ export class TSP {
     const transformed = this.transformRawPath(rawPath);
     const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
-  }
+  };
 
   nearestNeighborPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
-    return this.computePath(this.greedy.nearestNeighborPath)
+    return this.computePath(this.greedy.nearestNeighborPath);
   };
 
   nearestInsertionPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
-    return this.computePath(this.greedy.nearestInsertionPath)
+    return this.computePath(this.greedy.nearestInsertionPath);
   };
 
   farthestInsertionPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
     if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
-    return this.computePath(this.greedy.farthestInsertionPath)
+    return this.computePath(this.greedy.farthestInsertionPath);
   };
 
   christofides = (): PathResult => {
