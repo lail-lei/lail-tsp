@@ -1,5 +1,10 @@
 import { Edge } from '../mst/mst';
 
+interface BestNeighbor {
+  index: number,
+  distance: number;
+}
+
 export class GreedyHeuristics {
   distances: Matrix;
   isHamiltonianPath: boolean;
@@ -9,7 +14,7 @@ export class GreedyHeuristics {
     this.isHamiltonianPath = isHamiltonianPath;
   }
 
-  findNearestNeighbor = (vertex: number, visited: Set<number>) => {
+  findNearestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
     let min = Infinity;
     let minIndex = -1;
     for (let c = 0; c < this.distances[0].length + 1; c++) {
@@ -19,10 +24,10 @@ export class GreedyHeuristics {
         min = this.distances[vertex][minIndex];
       }
     }
-    return minIndex;
+    return { index: minIndex, distance: min };
   };
 
-  findFarthestNeighbor = (vertex: number, visited: Set<number>) => {
+  findFarthestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
     let max = -Infinity;
     let maxIndex = -1;
     for (let c = 0; c < this.distances[0].length + 1; c++) {
@@ -32,7 +37,7 @@ export class GreedyHeuristics {
         max = this.distances[vertex][maxIndex];
       }
     }
-    return maxIndex;
+    return { index: maxIndex, distance: max };
   };
 
   nearestNeighborPath = (): number[] => {
@@ -53,7 +58,7 @@ export class GreedyHeuristics {
       const current = stack.pop();
       if (current === undefined) continue;
       path.push(current);
-      const next = this.findNearestNeighbor(current, visited);
+      const { index: next } = this.findNearestNeighbor(current, visited);
       // encountered all, so break
       if (next === -1) break;
       visited.add(current);
@@ -80,7 +85,7 @@ export class GreedyHeuristics {
       visited.add(1);
     } else {
       path.push(0);
-      const next = getNextBestNeighbor(0);
+      const { index: next } = getNextBestNeighbor(0);
       path.push(next);
       visited.add(0);
       visited.add(next);
@@ -113,18 +118,17 @@ export class GreedyHeuristics {
     };
 
     while (visited.size < this.distances.length) {
-      const candidates: number[] = path
+      const candidates: BestNeighbor[] = path
         .map((node: number) => getNextBestNeighbor(node))
-        // todo - should be sorting by distance
-        .sort((a: number, b: number) => a - b);
-      const nextBest: number = nearest ? candidates[0] : candidates[candidates.length - 1];
-      const replaceEdge = findEdgeToReplace(path, nextBest);
+        .sort((a: BestNeighbor, b: BestNeighbor) => a.distance - b.distance);
+      const nextBestIndex: number = nearest ? candidates[0].index : candidates[candidates.length - 1].index;
+      const replaceEdge = findEdgeToReplace(path, nextBestIndex);
       if (!replaceEdge) throw new Error('Bad input. Encountered unreachable locations');
       const indexA = path.indexOf(replaceEdge.vertexA);
       const before = path.slice(0, indexA + 1);
       const after = path.slice(indexA + 1);
-      path = [...before, nextBest, ...after];
-      visited.add(nextBest);
+      path = [...before, nextBestIndex, ...after];
+      visited.add(nextBestIndex);
     }
 
     return path;
