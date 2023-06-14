@@ -12,9 +12,7 @@ export class TSP {
   start: PathNode;
   end?: PathNode | null;
   costMatrix: Matrix;
-  visitedNodes: Set<number> | undefined;
   floorPlan: Matrix; // wall data
-
   // contains predetermined start, end + dummy nodes
   allNodes: PathNode[];
   greedy?: GreedyHeuristics;
@@ -137,4 +135,16 @@ export class TSP {
     if (this.isHamiltonianPathProblem()) throw new Error('Christofides requires a complete graph to work');
     return this.computePath(this.mst.christofides);
   };
+
+  alphanumericSort = (): PathResult => {
+    if (this.error) throw new Error(this.error);
+    if (this.greedy === undefined) throw new Error('must call TSP.init() before calculating paths');
+    const sorted = this.nodes.sort((nodeA: PathNode, nodeB: PathNode) => {
+      if (nodeA.uid && nodeB.uid) return nodeA.uid.localeCompare(nodeB.uid);
+      return nodeA.gridId.localeCompare(nodeB.gridId);
+    })
+    const path = this.end ? [this.start, ...sorted, this.end] : [this.start, ...sorted];
+    const rawPath = path.map((node: PathNode) => this.allNodes.findIndex((current: PathNode) => current.uid === node.uid));
+    return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+  }
 }
