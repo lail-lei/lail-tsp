@@ -72,6 +72,9 @@ export class GreedyHeuristics {
     let path: number[] = [];
     const visited = new Set<number>();
 
+    const getNextBestNeighbor = (node: number) =>
+      nearest ? this.findNearestNeighbor(node, visited) : this.findFarthestNeighbor(node, visited);
+
     if (this.isHamiltonianPath) {
       path.push(1);
       path.push(2);
@@ -81,11 +84,12 @@ export class GreedyHeuristics {
       visited.add(2);
     } else {
       path.push(0);
+      const next = getNextBestNeighbor(0);
+      path.push(next);
       visited.add(0);
+      visited.add(next);
     }
 
-    const getNextBestNeighbor = (node: number) =>
-      nearest ? this.findNearestNeighbor(node, visited) : this.findFarthestNeighbor(node, visited);
 
     const findEdgeToReplace = (path: number[], newNeighbor: number): Edge | null => {
       const computeIncreaseInPathLength = (edge: Edge, newNode: number) => {
