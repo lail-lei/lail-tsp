@@ -1,7 +1,7 @@
 import { Edge } from '../mst/mst';
 
 interface BestNeighbor {
-  index: number,
+  index: number;
   distance: number;
 }
 
