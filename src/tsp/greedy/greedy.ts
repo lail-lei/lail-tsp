@@ -31,11 +31,11 @@ export class GreedyHeuristics {
    * the provided vertex and next closest neighbor. Used in nearest insertion
    * and nearest neighbor paths.
    *
-   * @todo - consider abstracting some of the logic of this function so that 
+   * @todo - consider abstracting some of the logic of this function so that
    * it can be reused in findFarthestNeighbor
    * @param {number} vertex
    * @param {Set<number>} visited
-   * @returns {BestNeighbor} 
+   * @returns {BestNeighbor}
    * @memberof GreedyHeuristics
    */
   private findNearestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
@@ -55,11 +55,11 @@ export class GreedyHeuristics {
    * Returns next farthest, unvisited node to provided vertex, and the distance between
    * the provided vertex and next farthest neighbor. Used in farthest insertion
    *
-   * @todo - consider abstracting some of the logic of this function so that 
+   * @todo - consider abstracting some of the logic of this function so that
    * it can be reused in findNearestNeighbor
    * @param {number} vertex
    * @param {Set<number>} visited
-   * @returns {BestNeighbor} 
+   * @returns {BestNeighbor}
    * @memberof GreedyHeuristics
    */
   private findFarthestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
@@ -104,11 +104,11 @@ export class GreedyHeuristics {
 
     /**
      * After the next best neighbor (say vertexN) is found for the path,
-     * find the edge (say vertexA -> vertexB) such that spliting the edge up 
-     * and creating a new tour including next best neighbor would result in cheapest cost. 
+     * find the edge (say vertexA -> vertexB) such that spliting the edge up
+     * and creating a new tour including next best neighbor would result in cheapest cost.
      * (vertexA -> vertexB transformed to vertexA -> vertexN -> vertexB)
-     * 
-     * This edge (vertexA -> vertexB) is returned. 
+     *
+     * This edge (vertexA -> vertexB) is returned.
      *
      * @param {number[]} path
      * @param {number} newNeighbor
@@ -158,11 +158,11 @@ export class GreedyHeuristics {
   };
 
   /**
-  * Returns node indices in suboptimal nearest neighbor order.
-  *
-  * @memberof GreedyHeuristics
-  * @returns array of indices representing all nodes in path.
-  */
+   * Returns node indices in suboptimal nearest neighbor order.
+   *
+   * @memberof GreedyHeuristics
+   * @returns array of indices representing all nodes in path.
+   */
   nearestNeighborPath = (): number[] => {
     const stack: number[] = [];
     const path: number[] = [];
@@ -196,17 +196,17 @@ export class GreedyHeuristics {
 
   /**
    * Returns node indices in suboptimal nearest insertion order.
-   * 
+   *
    * @returns array of indices representing all nodes in path.
    * @memberof GreedyHeuristics
    */
   nearestInsertionPath = (): number[] => this.insertionPath(true);
 
   /**
-  * Returns node indices in suboptimal farthest insertion order.
-  * 
-  * @returns array of indices representing all nodes in path.
-  * @memberof GreedyHeuristics
-  */
+   * Returns node indices in suboptimal farthest insertion order.
+   *
+   * @returns array of indices representing all nodes in path.
+   * @memberof GreedyHeuristics
+   */
   farthestInsertionPath = (): number[] => this.insertionPath(false);
 }

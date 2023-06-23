@@ -9,7 +9,7 @@ export interface PathResult {
 /**
  * Traveling Salesperson Problem class. Takes array of locations (in PathNode format),
  * calculates distances using AStar algorithm (with configurable distance heuristic),
- * and provides 3 heuristic and 1 naive approaches to solving TSP. 
+ * and provides 3 heuristic and 1 naive approaches to solving TSP.
  *
  * @export
  * @class TSP
@@ -27,7 +27,7 @@ export class TSP {
 
   /**
    * Creates an instance of TSP.
-   * 
+   *
    * @param {{
    *     nodes: PathNode[];
    *     floorplan: number[][];
@@ -105,7 +105,7 @@ export class TSP {
   };
 
   /**
-   * Returns true if the problem (TSP parent class) has a defined end node 
+   * Returns true if the problem (TSP parent class) has a defined end node
    * that is not the same location as the start.
    *
    * @private
@@ -155,7 +155,7 @@ export class TSP {
 
   /**
    * Naive path-finding method.
-   * Returns locations sorted into alphanumeric order. 
+   * Returns locations sorted into alphanumeric order.
    * Example 1:  [A11, B30, A08, D20, C13] -> [A08, A11, B30, C13, D20]
    * Example 2:  ['20,10', '0,7', '0,0', '3,4', '20,0' ] -> ['0,0', '0,7', '3,4', '20,0', '20,10']
    *
@@ -187,7 +187,7 @@ export class TSP {
    * 3. Transforms the path into a circular tour if not a Hamiltonian Path problem
    *
    * @private
-   * @param {() => number[]} computePath - heuristic function to compute a Hamilton Path 
+   * @param {() => number[]} computePath - heuristic function to compute a Hamilton Path
    * @returns {PathResult}
    * @memberof TSP
    */
@@ -200,7 +200,7 @@ export class TSP {
   };
 
   /**
-   * Converts raw path (array of indices representing nodes in TSP.allNodes) to 
+   * Converts raw path (array of indices representing nodes in TSP.allNodes) to
    * a PathNode array (contains all node information).
    *
    * @private
@@ -210,11 +210,11 @@ export class TSP {
   private createPathNodeArray = (rawPath: number[]): PathNode[] => rawPath.map((index: number) => this.allNodes[index]);
 
   /**
-   * Estimates distance to traverse provided path. Iterates over 
+   * Estimates distance to traverse provided path. Iterates over
    * list and sums the distance from each path node.
-   * 
+   *
    * @private
-   * @param {number[]} path 
+   * @param {number[]} path
    * @returns {number} - estimated distance to traverse param path.
    * @memberof TSP
    */
@@ -244,6 +244,4 @@ export class TSP {
     if (this.error) throw new Error(this.error);
     return [...path, this.start];
   };
-
-
 }

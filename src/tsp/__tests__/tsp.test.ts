@@ -110,5 +110,4 @@ describe('simple test', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.farthestInsertionPath();
   });
-
 });

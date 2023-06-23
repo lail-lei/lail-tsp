@@ -124,7 +124,7 @@ describe('integration', () => {
     const end = createPathNode('L02', LocationType.ALPHANUMERIC);
     const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
     expect(() => {
-      new TSP({ nodes, floorplan, start, end })
+      new TSP({ nodes, floorplan, start, end });
     }).toThrowError(`Unreachable location encountered.`);
   });
 
