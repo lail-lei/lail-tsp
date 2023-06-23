@@ -1,11 +1,23 @@
 import { EdgeSort } from './constants';
 import { MST } from './mst';
 
+/**
+ * Heuristic approaches to solving TSP using MST.
+ *
+ * @export
+ * @class MSTHeuristics
+ */
 export class MSTHeuristics {
   distances: number[][];
   mst: MST;
   isHamiltonianPath: boolean;
 
+  /**
+   * Creates an instance of MSTHeuristics.
+   * @param {number[][]} distances
+   * @param {boolean} [isHamiltonianPath]
+   * @memberof MSTHeuristics
+   */
   constructor(distances: number[][], isHamiltonianPath?: boolean) {
     this.distances = distances;
     this.isHamiltonianPath = !!isHamiltonianPath;
@@ -13,8 +25,12 @@ export class MSTHeuristics {
     this.mst.prims();
   }
 
+  /**
+   * Implementation of christofides algorithm.
+   * @todo - confirm solutions are within 1.5x optimal distance.
+   * @memberof MSTHeuristics
+   */
   christofides = (): number[] => {
-    // todo- there's likely a bug in this
     // find MST tree
     const tree = this.mst.convertEdgePathToTree({
       path: this.mst.mstEdges,

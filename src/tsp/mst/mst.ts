@@ -10,12 +10,24 @@ interface AdjencyList {
   [vertex: number]: Edge[];
 }
 
+/**
+ * MST (minimal spanning tree) Object. Contains methods for creating, mutating, +
+ * processing a MST. 
+ *
+ * @export
+ * @class MST
+ */
 export class MST {
   distances: number[][];
   numVertices: number;
   visited: Set<number>;
   mstEdges: Edge[];
 
+  /**
+   * Creates an instance of MST.
+   * @param {number[][]} distances
+   * @memberof MST
+   */
   constructor(distances: number[][]) {
     this.distances = distances;
     this.numVertices = distances.length;
@@ -25,10 +37,17 @@ export class MST {
 
   /**
    * Creates MST using modified Prim's algorithm.
-   * MST (adjency list) is stored in tree property in this class.
+   * MST (adjency list) is stored in MST.tree property.
    */
   prims = () => {
-    const getMinReachableEdge = (): Edge => {
+
+    /**
+     * Finds the nearest unvisited + reachable edge to any
+     * vertex in the MST.
+     * 
+     * @return {Edge}  {Edge}
+     */
+    const getNearestReachableEdge = (): Edge => {
       const minEdge = { vertexA: -1, vertexB: -1, weight: Infinity } as Edge;
       // for each node,
       for (let a = 0; a < this.numVertices; a++) {
@@ -63,7 +82,7 @@ export class MST {
       // ...mark current node as visited
       this.visited.add(current);
       // find the next reachable edge with the smallest weight
-      const minReachableEdge = getMinReachableEdge();
+      const minReachableEdge = getNearestReachableEdge();
       // the connecting node should now be added to MST
       current = minReachableEdge.vertexB;
       edgePath.push(minReachableEdge);
@@ -72,12 +91,35 @@ export class MST {
   };
 
   /**
-   * Converts path of edges into a traversable tree (uses adjency list data structure)
-   * @param path, array of edges, in order visited during prims algo
-   * @param undirected, optional boolean, default to false. When creating a simple MST path/traversable tree we do not
+   * 
+   * @param undirected 
+   * 
+   * @returns An adjency list including only the edges in MST.
+   */
+
+
+  /**
+   * Converts path of edges into a traversable tree (uses adjency list data structure).
+   * Config options include:
+   * 
+   * 1. undirected - whether the MST should contain 2 edges or 1 to represent connection between 2 vertices (if undirected, A -> B is different to B -> A)
+   * 2. edgeSort - whether to order edges at a certain level of the tree by cost or by or number of children. 
+   * 
+   * Note - when creating a simple MST path/traversable tree we do not
    * want the MST to be considered undirected (i.e., once we visit a node, we don't want to go backwards).
-   * however, for christofedes implementations, it is helpful to create an undirected graph.
-   * @returns adjency list including only the edges in MST
+   * however, for christofedes implementations, it is helpful to create an undirected graph
+   *
+   * @param {{
+   *     path: Edge[];
+   *     prioritizeLeafNodes?: boolean;
+   *     undirected?: boolean;
+   *     edgeSort?: EdgeSort;
+   *   }} {
+   *     path - array of edges, in order visited during prims algo,
+   *     undirected - optional boolean, defaults to false.
+   *     edgeSort - how to prioritize edges at a certain level of the adjency list
+   *   }
+   * @memberof MST
    */
   convertEdgePathToTree = ({
     path,
@@ -85,7 +127,6 @@ export class MST {
     edgeSort,
   }: {
     path: Edge[];
-    prioritizeLeafNodes?: boolean;
     undirected?: boolean;
     edgeSort?: EdgeSort;
   }): AdjencyList => {
@@ -117,7 +158,8 @@ export class MST {
    *
    * To avoid having to return to your current location once you leave it,
    * take article A first, then collect B and all other items close to B.
-   *
+   * 
+   * @param tree - AdjencyList
    */
   prioritizeLeafNodes = (tree: AdjencyList) => {
     const treeSize = Object.keys(tree).length;
@@ -141,6 +183,8 @@ export class MST {
    *
    * When traversing our MST, prioritize visting nodes closest to the current nodes.
    * This more closely mimics the behavior of humans.
+   * 
+   * @param tree - AdjencyList
    */
   prioritizeLowWeightEdges = (tree: AdjencyList) => {
     const treeSize = Object.keys(tree).length;
@@ -155,7 +199,14 @@ export class MST {
     }
   };
 
-  cloneTree = (tree: AdjencyList) => {
+  /**
+   * Intended to return a deep copy of the tree (AdjencyList) passed
+   * as param. 
+   * 
+   * @todo - confirm that tree returned is in fact a deep copy.
+   * @param tree - AdjencyList
+   */
+  cloneTree = (tree: AdjencyList): AdjencyList => {
     return Object.keys(tree).reduce((clone: AdjencyList, vertex: string) => {
       const key = parseInt(vertex, 10);
       clone[key] = [...tree[key]];
@@ -164,8 +215,9 @@ export class MST {
   };
 
   /**
-   * Performs preorder traversal on the MST stored in this.tree
-   * @returns an array of vertices in preorder. vertices correspond to indices in graph.
+   * Performs preorder traversal on the MST stored in this.tree.
+   * 
+   * @returns An array of vertices in preorder. vertices correspond to indices in graph.
    */
   preorderTraversal = (tree: AdjencyList): number[] => {
     const stack: number[] = [0];
@@ -182,10 +234,11 @@ export class MST {
   };
 
   /**
-   * traverses generated tree and finds any vertex in
-   * the mst that has an odd degree
-   * @param tree AdjencyList
-   * @returns array of vertices (by index in graph) that have an odd degree
+   * Traverses generated tree and finds any vertex in
+   * the mst that has an odd degree.
+   * 
+   * @param tree - tree for which to find all odd degree vertices.
+   * @returns An array of vertices (by index in graph) that have an odd degree.
    */
   oddDegreeVertices = (tree: AdjencyList): number[] => {
     const vertices = Object.keys(tree).map((key: string) => parseInt(key, 10));
@@ -193,12 +246,12 @@ export class MST {
   };
 
   /**
-   * uses edmund's blossom algoritm to find
+   * Uses edmund's blossom algoritm to find
    * minmum cost perfect matching for the vertices
    * passed as argument.
-   * @param vertices: an array of indices (from graph) of any vertice to create a min cost
-   * perfect matching for
-   * @returns an adjency list containing all edges in the min cost perfect matching
+   * 
+   * @param vertices - an array of indices (from graph) of any vertice for which to create a min-cost perfect matching.
+   * @returns An adjency list containing all edges in the min cost perfect matching.
    */
   getMinCostPerfectMatching = (vertices: number[]): AdjencyList => {
     const blossomArray: number[][] = [];
@@ -230,9 +283,11 @@ export class MST {
    * Finds the Eulerian tour (circuit) of a tree.
    * Assumes that since we've added the perfect matching to our
    * MST, the graph contains no odd degree vertices.
-   * @todo - check if graph is eulerian before.
-   * @param eulerGraph, any adjency list with 0 odd degree vertices
-   * @returns
+   * 
+   * @todo Add check (if graph is eulerian) before executing function and throw error otherwise.
+   * 
+   * @param eulerGraph - any adjency list with 0 odd degree vertices.
+   * @returns An array of numbers (indices) representing each node, in the order visited in Eulerian Tour.
    */
   findEulerianTour = (eulerGraph: AdjencyList): number[] => {
     const clone = this.cloneTree(eulerGraph);
@@ -271,10 +326,11 @@ export class MST {
   };
 
   /**
-   * Creates a hamiltonian path from a euler tour by skipping
-   * any visited vertices
-   * @param tour an array of numbers (vertices), representing a eulear tour
-   * @returns
+   * Creates a Hamiltonian path from a Euler tour by skipping
+   * any visited vertices.
+   * 
+   * @param tour - an array of numbers (vertices), representing a Eulear tour.
+   * @returns An array of numbers (indices) representing each node, in the order visited in Hamiltonian path.
    */
   createHamiltonianPath = (tour: number[]): number[] => {
     const visited = new Set<number>();
