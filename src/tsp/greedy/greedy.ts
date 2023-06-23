@@ -38,7 +38,7 @@ export class GreedyHeuristics {
    * @returns {BestNeighbor} 
    * @memberof GreedyHeuristics
    */
-  findNearestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
+  private findNearestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
     let min = Infinity;
     let minIndex = -1;
     for (let c = 0; c < this.distances[0].length + 1; c++) {
@@ -62,7 +62,7 @@ export class GreedyHeuristics {
    * @returns {BestNeighbor} 
    * @memberof GreedyHeuristics
    */
-  findFarthestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
+  private findFarthestNeighbor = (vertex: number, visited: Set<number>): BestNeighbor => {
     let max = -Infinity;
     let maxIndex = -1;
     for (let c = 0; c < this.distances[0].length + 1; c++) {
@@ -76,50 +76,13 @@ export class GreedyHeuristics {
   };
 
   /**
-   * Returns node indices in suboptimal nearest neighbor order.
-   *
-   * @memberof GreedyHeuristics
-   * @returns array of indices representing all nodes in path.
-   */
-  nearestNeighborPath = (): number[] => {
-    const stack: number[] = [];
-    const path: number[] = [];
-    const visited = new Set<number>();
-
-    if (this.isHamiltonianPath) {
-      // start at 1 to ensure first and last node do not connect
-      stack.push(1);
-      path.push(0);
-      visited.add(1);
-    } else {
-      stack.push(0);
-    }
-
-    while (stack.length > 0) {
-      const current = stack.pop();
-      if (current === undefined) continue;
-      path.push(current);
-      const { index: next } = this.findNearestNeighbor(current, visited);
-      // encountered all, so break
-      if (next === -1) break;
-      visited.add(current);
-      stack.push(next);
-    }
-
-    if (!this.isHamiltonianPath) return path;
-
-    // move start node to end of path, and reverse
-    return [...path.slice(1), 0].reverse();
-  };
-
-  /**
    * Helper function that uses insertion to compute node order (suboptimal).
    *
    * @param {boolean} nearest - represents whether to use nearest (true) or farthest insertion  (false)
    * @memberof GreedyHeuristics
    * @returns array of indices representing all nodes in path.
    */
-  insertionPath = (nearest: boolean): number[] => {
+  private insertionPath = (nearest: boolean): number[] => {
     let path: number[] = [];
     const visited = new Set<number>();
 
@@ -192,6 +155,43 @@ export class GreedyHeuristics {
     }
 
     return path;
+  };
+
+  /**
+  * Returns node indices in suboptimal nearest neighbor order.
+  *
+  * @memberof GreedyHeuristics
+  * @returns array of indices representing all nodes in path.
+  */
+  nearestNeighborPath = (): number[] => {
+    const stack: number[] = [];
+    const path: number[] = [];
+    const visited = new Set<number>();
+
+    if (this.isHamiltonianPath) {
+      // start at 1 to ensure first and last node do not connect
+      stack.push(1);
+      path.push(0);
+      visited.add(1);
+    } else {
+      stack.push(0);
+    }
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (current === undefined) continue;
+      path.push(current);
+      const { index: next } = this.findNearestNeighbor(current, visited);
+      // encountered all, so break
+      if (next === -1) break;
+      visited.add(current);
+      stack.push(next);
+    }
+
+    if (!this.isHamiltonianPath) return path;
+
+    // move start node to end of path, and reverse
+    return [...path.slice(1), 0].reverse();
   };
 
   /**
