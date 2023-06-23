@@ -1,4 +1,4 @@
-import { AStar, PathNode, Matrix, DistanceHeuristic } from 'lail-astar';
+import { AStar, PathNode, DistanceHeuristic } from 'lail-astar';
 import { GreedyHeuristics } from './greedy';
 import { MSTHeuristics } from './mst';
 
@@ -11,8 +11,8 @@ export class TSP {
   nodes: PathNode[];
   start: PathNode;
   end?: PathNode | null;
-  costMatrix: Matrix;
-  floorPlan: Matrix; // wall data
+  costMatrix: number[][];
+  floorPlan: number[][]; // wall data
   // contains predetermined start, end + dummy nodes
   allNodes: PathNode[];
   greedy?: GreedyHeuristics;
@@ -28,7 +28,7 @@ export class TSP {
     distanceHeuristic,
   }: {
     nodes: PathNode[];
-    floorplan: Matrix;
+    floorplan: number[][];
     start: PathNode;
     end?: PathNode;
     distanceHeuristic?: DistanceHeuristic;

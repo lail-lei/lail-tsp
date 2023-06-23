@@ -2,11 +2,11 @@ import { EdgeSort } from './constants';
 import { MST } from './mst';
 
 export class MSTHeuristics {
-  distances: Matrix;
+  distances: number[][];
   mst: MST;
   isHamiltonianPath: boolean;
 
-  constructor(distances: Matrix, isHamiltonianPath?: boolean) {
+  constructor(distances: number[][], isHamiltonianPath?: boolean) {
     this.distances = distances;
     this.isHamiltonianPath = !!isHamiltonianPath;
     this.mst = new MST(this.distances);

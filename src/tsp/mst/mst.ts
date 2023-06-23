@@ -11,12 +11,12 @@ interface AdjencyList {
 }
 
 export class MST {
-  distances: Matrix;
+  distances: number[][];
   numVertices: number;
   visited: Set<number>;
   mstEdges: Edge[];
 
-  constructor(distances: Matrix) {
+  constructor(distances: number[][]) {
     this.distances = distances;
     this.numVertices = distances.length;
     this.visited = new Set<number>();

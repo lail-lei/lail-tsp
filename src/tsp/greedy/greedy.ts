@@ -6,10 +6,10 @@ interface BestNeighbor {
 }
 
 export class GreedyHeuristics {
-  distances: Matrix;
+  distances: number[][];
   isHamiltonianPath: boolean;
 
-  constructor(distances: Matrix, isHamiltonianPath: boolean) {
+  constructor(distances: number[][], isHamiltonianPath: boolean) {
     this.distances = distances;
     this.isHamiltonianPath = isHamiltonianPath;
   }
