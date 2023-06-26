@@ -1,4 +1,4 @@
-import { LocationType, createPathNode, preprocessList } from '../preprocess';
+import { LocationFormat, createPathNode, preprocessList } from '../preprocess';
 import { TSP } from '../tsp';
 
 describe('integration', () => {
@@ -120,9 +120,9 @@ describe('integration', () => {
       'M37',
       'C14',
     ];
-    const start = createPathNode('A01', LocationType.ALPHANUMERIC);
-    const end = createPathNode('L02', LocationType.ALPHANUMERIC);
-    const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
+    const start = createPathNode('A01', LocationFormat.ALPHABETICAL_X);
+    const end = createPathNode('L02', LocationFormat.ALPHABETICAL_X);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     expect(() => {
       new TSP({ nodes, floorplan, start, end });
     }).toThrowError(`Unreachable location encountered.`);
@@ -138,8 +138,8 @@ describe('integration', () => {
 
   it('passes failed test 3', () => {
     const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
-    const start = createPathNode('0,0', LocationType.COORDINATE);
-    const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     tsp.farthestInsertionPath();
   });
