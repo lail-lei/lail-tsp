@@ -112,7 +112,7 @@ export class GreedyHeuristics {
      *
      * @param {number[]} path
      * @param {number} newNeighbor
-     * @return {*}  {(Edge | null)}
+     * @return {{(Edge | null)}
      */
     const findEdgeToReplace = (path: number[], newNeighbor: number): Edge | null => {
       const computeIncreaseInPathLength = (edge: Edge, newNode: number) => {
