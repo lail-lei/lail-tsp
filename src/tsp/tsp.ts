@@ -225,9 +225,10 @@ export class TSP {
   private computeGreedyPath = (computePath: () => number[]): PathResult => {
     // todo - if list is sufficiently short, return list without computing
     const rawPath = computePath();
+    // connect raw path back to start node if not a hamiltonian path;
+    if (!this.isHamiltonianPathProblem()) rawPath.push(0);
     const transformed = this.createPathNodeArray(rawPath);
-    const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
-    const result = { path, estimatedCost: this.estimateTotalPathCost(rawPath) } as PathResult;
+    const result = { path: transformed, estimatedCost: this.estimateTotalPathCost(rawPath) } as PathResult;
     if (this.reconstructPath) result.reconstruction = this.reconstructTruePath(rawPath);
     return result;
   };
@@ -255,13 +256,19 @@ export class TSP {
     if (this.error) throw new Error(this.error);
     if (path.length === 1) return path[0];
 
+    let start = 0;
+    let end = 1;
     let sum = 0;
-    for (let i = 0; i < path.length - 2; i++) {
-      const vertexA = path[i];
-      const vertexB = path[i + 1];
+
+    while (end < path.length) {
+      const vertexA = path[start];
+      const vertexB = path[end];
       const cost = this.costMatrix[vertexA][vertexB];
       sum += cost;
+      start++;
+      end++;
     }
+
     return sum;
   };
 
@@ -281,30 +288,18 @@ export class TSP {
         "Path reconstruction data was not stored. Please pass parament 'reconstruct path' when creating TSP object",
       );
     if (!this.floorPlan) new Error('Cannot reconstruct true path if no floorplan provided');
-    if (path.length === 1) return [this.allNodes[path[0]]];
 
     const result: PathNode[] = [];
+    let start = 0;
+    let end = 1;
 
-    for (let i = 0; i < path.length - 2; i++) {
-      const vertexA = path[i];
-      const vertexB = path[i + 1];
-      const data = this.shortestPaths[vertexA][vertexB];
-      result.push(...data);
+    while (end < path.length) {
+      const vertexA = path[start];
+      const vertexB = path[end];
+      result.push(...this.shortestPaths[vertexA][vertexB]);
+      start++;
+      end++;
     }
-
     return result;
-  };
-
-  /**
-   * Appends start node to path (PathNode array).
-   *
-   * @private
-   * @param {PathNode[]} path
-   * @returns {PathNode[]} - PathNode array with identical start and end PathNodes.
-   * @memberof TSP
-   */
-  private connectBackToStart = (path: PathNode[]): PathNode[] => {
-    if (this.error) throw new Error(this.error);
-    return [...path, this.start];
   };
 }
