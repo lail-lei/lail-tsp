@@ -4,6 +4,7 @@ import { GreedyHeuristics } from './greedy';
 export interface PathResult {
   path: PathNode[];
   estimatedCost: number;
+  reconstruction?: PathNode[];
 }
 
 /**
@@ -24,6 +25,8 @@ export class TSP {
   private end?: PathNode | null;
   error?: string;
   private distanceHeuristic?: DistanceHeuristic;
+  private reconstructPath: boolean;
+  private shortestPaths: PathNode[][][] | undefined;
 
   /**
    * Creates an instance of TSP.
@@ -49,12 +52,14 @@ export class TSP {
     start,
     end,
     distanceHeuristic,
+    reconstructPath,
   }: {
     nodes: PathNode[];
     floorplan?: number[][];
     start: PathNode;
     end?: PathNode;
     distanceHeuristic?: DistanceHeuristic;
+    reconstructPath?: boolean;
   }) {
     this.floorPlan = floorplan;
     this.start = start;
@@ -62,9 +67,9 @@ export class TSP {
     this.distanceHeuristic = distanceHeuristic;
     this.nodes = nodes;
     this.allNodes = end && this.isHamiltonianPathProblem() ? [start, end, ...nodes] : [start, ...nodes];
-    this.costMatrix = new Array(this.allNodes.length)
-      .fill(false)
-      .map(() => new Array(this.allNodes.length).fill(Infinity));
+    this.reconstructPath = !!reconstructPath;
+    this.costMatrix = this.createNodeMatrix(Infinity);
+    this.shortestPaths = reconstructPath ? this.createNodeMatrix([]) : undefined;
     this.calculateDistances();
     this.greedy = new GreedyHeuristics(this.costMatrix, this.isHamiltonianPathProblem());
   }
@@ -72,8 +77,22 @@ export class TSP {
   /** Constructor helpers */
 
   /**
+   * Create Nodes Matrix. Matrix can be used store cost of path between nodes or the
+   * actual path data itself.
+   * @todo - it might be better NOT abstracting this
+   * @private
+   * @memberof TSP
+   */
+  private createNodeMatrix = (fill: number | PathNode[]) => {
+    return new Array<number | PathNode | undefined>(this.allNodes.length)
+      .fill(undefined)
+      .map(() => new Array(this.allNodes.length).fill(fill));
+  };
+  /**
    * Calculates distances between each node in path (including start node) using AStar algorithm.
    * If problem is Hamilontian path, distances between all nodes and the end node are also calculated.
+   * If TSP configuration option reconstructPath is set to true, this method also stores
+   * reconstructed path in this.shortestPaths
    *
    * @private
    * @memberof TSP
@@ -88,11 +107,18 @@ export class TSP {
         else {
           const start = this.allNodes[r];
           const end = this.allNodes[c];
-          const distance = aStar
-            ? aStar.search(start, end, false, this.distanceHeuristic).minCost
-            : this.distanceHeuristic === DistanceHeuristic.EUCLIDEAN
-            ? start.calculateEuclideanDistance(end)
-            : start.calculateManhattenDistance(end);
+          let distance: number;
+
+          if (aStar) {
+            const { minCost, path } = aStar.search(start, end, this.reconstructPath, this.distanceHeuristic);
+            distance = minCost;
+            if (path && this.shortestPaths) this.shortestPaths[r][c] = path;
+          } else {
+            distance =
+              this.distanceHeuristic === DistanceHeuristic.EUCLIDEAN
+                ? start.calculateEuclideanDistance(end)
+                : start.calculateManhattenDistance(end);
+          }
 
           if (distance === Infinity) {
             const unreacahbleError = `Unreachable location encountered.`;
@@ -201,7 +227,9 @@ export class TSP {
     const rawPath = computePath();
     const transformed = this.createPathNodeArray(rawPath);
     const path = this.isHamiltonianPathProblem() ? transformed : this.connectBackToStart(transformed);
-    return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+    const result = { path, estimatedCost: this.estimateTotalPathCost(rawPath) } as PathResult;
+    if (this.reconstructPath) result.reconstruction = this.reconstructTruePath(rawPath);
+    return result;
   };
 
   /**
@@ -235,6 +263,36 @@ export class TSP {
       sum += cost;
     }
     return sum;
+  };
+
+  /**
+   * Creates reconstructed path between nodes. Iterates over
+   * list and appends the path data from each path node.
+   *
+   * @private
+   * @param {number[]} path
+   * @returns {PathNode[]} - path data (including walls from each path)
+   * @memberof TSP
+   */
+  private reconstructTruePath = (path: number[]): PathNode[] => {
+    if (this.error) throw new Error(this.error);
+    if (!this.reconstructPath || !this.shortestPaths)
+      throw new Error(
+        "Path reconstruction data was not stored. Please pass parament 'reconstruct path' when creating TSP object",
+      );
+    if (!this.floorPlan) new Error('Cannot reconstruct true path if no floorplan provided');
+    if (path.length === 1) return [this.allNodes[path[0]]];
+
+    const result: PathNode[] = [];
+
+    for (let i = 0; i < path.length - 2; i++) {
+      const vertexA = path[i];
+      const vertexB = path[i + 1];
+      const data = this.shortestPaths[vertexA][vertexB];
+      result.push(...data);
+    }
+
+    return result;
   };
 
   /**

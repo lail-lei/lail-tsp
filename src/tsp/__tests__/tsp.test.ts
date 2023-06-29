@@ -128,4 +128,38 @@ describe('simple test', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
+
+  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion, reconstructs path', () => {
+    const tsp = new TSP({
+      nodes,
+      floorplan,
+      start: new PathNode(0, 0),
+      end: new PathNode(25, 49),
+      reconstructPath: true,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost, reconstruction } = tsp.nearestInsertionPath();
+  });
+  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion, reconstructs path', () => {
+    const tsp = new TSP({
+      nodes,
+      floorplan,
+      start: new PathNode(0, 0),
+      end: new PathNode(25, 49),
+      reconstructPath: true,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost, reconstruction } = tsp.farthestInsertionPath();
+  });
+  it('floorplan 1, start: 0,0 end: 25,49, nearest neighbor, reconstructs path', () => {
+    const tsp = new TSP({
+      nodes,
+      floorplan,
+      start: new PathNode(0, 0),
+      end: new PathNode(25, 49),
+      reconstructPath: true,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost, reconstruction } = tsp.nearestNeighborPath();
+  });
 });
