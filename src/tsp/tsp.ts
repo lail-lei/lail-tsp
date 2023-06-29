@@ -18,7 +18,7 @@ export class TSP {
   private nodes: PathNode[];
   private start: PathNode;
   private costMatrix: number[][];
-  private floorPlan: number[][]; // for wall data
+  private floorPlan?: number[][]; // for wall data
   private allNodes: PathNode[]; // contains predetermined start, end + dummy nodes
   private greedy: GreedyHeuristics;
   private end?: PathNode | null;
@@ -51,7 +51,7 @@ export class TSP {
     distanceHeuristic,
   }: {
     nodes: PathNode[];
-    floorplan: number[][];
+    floorplan?: number[][];
     start: PathNode;
     end?: PathNode;
     distanceHeuristic?: DistanceHeuristic;
@@ -79,7 +79,8 @@ export class TSP {
    * @memberof TSP
    */
   private calculateDistances = () => {
-    const aStar = new AStar(this.floorPlan);
+    let aStar;
+    if (this.floorPlan) aStar = new AStar(this.floorPlan);
 
     for (let r = 0; r < this.allNodes.length; r++) {
       for (let c = 0; c < this.allNodes.length; c++) {
@@ -87,7 +88,11 @@ export class TSP {
         else {
           const start = this.allNodes[r];
           const end = this.allNodes[c];
-          const distance = aStar.search(start, end, false, this.distanceHeuristic).minCost;
+          const distance = aStar
+            ? aStar.search(start, end, false, this.distanceHeuristic).minCost
+            : this.distanceHeuristic === DistanceHeuristic.EUCLIDEAN
+            ? start.calculateEuclideanDistance(end)
+            : start.calculateManhattenDistance(end);
 
           if (distance === Infinity) {
             const unreacahbleError = `Unreachable location encountered.`;

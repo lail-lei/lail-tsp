@@ -93,21 +93,39 @@ const nodes = [
 ];
 
 describe('simple test', () => {
-  it('floorplan 1, start: 25,5 end: 0,49, greedy path', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, greedy path', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
 
-  it('floorplan 1, start: 25,5 end: 0,49, nearest insertion', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestInsertionPath();
   });
 
-  it('floorplan 1, start: 25,5 end: 0,49, farthest insertion', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.farthestInsertionPath();
+  });
+
+  it('no floorplan, start: 0,0 end: 25,49, farthest insertion', () => {
+    const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost } = tsp.farthestInsertionPath();
+  });
+
+  it('no floorplan, start: 0,0 end: 25,49, nearest insertion', () => {
+    const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost } = tsp.nearestInsertionPath();
+  });
+
+  it('no floorplan, start: 0,0 end: 25,49, nearest neighbor', () => {
+    const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
 });
