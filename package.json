@@ -1,6 +1,6 @@
 {
   "name": "lail-tsp-solutions",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "heuristic solutions for traveling salesperson problem",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
