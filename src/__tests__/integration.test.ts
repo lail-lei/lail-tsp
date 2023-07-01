@@ -102,45 +102,66 @@ describe('integration', () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
+  const locations = [
+    'M09',
+    'Y02',
+    'A18',
+    'G09',
+    'S15',
+    'G02',
+    'E07',
+    'X17',
+    'F20',
+    'G16',
+    'G11',
+    'C14',
+    'W06',
+    'C18',
+    'P12',
+    'L07',
+    'N03',
+    'Q04',
+    'N11',
+    'T02',
+    'B14',
+  ];
+
   it('throws error if encounters unreachable node', () => {
-    const locations = [
-      'M09',
-      'L02',
-      'Y02',
-      'R28',
-      'D28',
-      'G09',
-      'S33',
-      'G02',
-      'E07',
-      'X33',
-      'F20',
-      'G16',
-      'G35',
-      'M37',
-      'C14',
-    ];
     const start = createPathNode('A01', LocationFormat.ALPHABETICAL_X);
     const end = createPathNode('L02', LocationFormat.ALPHABETICAL_X);
-    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const nodes = preprocessList([...locations, 'M30'], LocationFormat.ALPHABETICAL_X);
     expect(() => {
       new TSP({ nodes, floorplan, start, end });
     }).toThrowError(`Unreachable location encountered.`);
   });
-
-  // it('passes failed test 2', () => {
-  //   const locations = ['Q05', 'W07', 'G21', 'Q21', 'R17', 'I13', 'P11'];
-  //   const start = createPathNode('12,19', LocationType.COORDINATE);
-  //   const nodes = preprocessList({ list: locations, locationType: LocationType.ALPHANUMERIC });
-  //   const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-  //   tsp.christofides();
-  // });
 
   it('passes failed test 3', () => {
     const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    tsp.farthestInsertionPath();
+    const { estimatedCost } = tsp.farthestInsertionPath();
+  });
+
+  it('passes failed test 3', () => {
+    const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    const { estimatedCost } = tsp.simulatedAnnealing();
+  });
+
+  it('passes failed test 3', () => {
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    const { estimatedCost } = tsp.farthestInsertionPath();
+  });
+
+  it('passes failed test 3', () => {
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    const { estimatedCost } = tsp.simulatedAnnealing();
   });
 });

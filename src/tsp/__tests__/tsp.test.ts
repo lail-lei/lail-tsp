@@ -99,6 +99,12 @@ describe('simple test', () => {
     const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
 
+  it('floorplan 1, start: 0,0 end: 25,49, simulated annealing', () => {
+    const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { path, estimatedCost } = tsp.simulatedAnnealing();
+  });
+
   it('floorplan 1, start: 0,0 end: 25,49, nearest insertion', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

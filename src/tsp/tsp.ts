@@ -1,5 +1,6 @@
 import { AStar, PathNode, DistanceHeuristic } from 'lail-astar';
 import { GreedyHeuristics } from './greedy';
+import { Stochastic } from './stochastic';
 
 export interface PathResult {
   path: PathNode[];
@@ -22,6 +23,7 @@ export class TSP {
   private floorPlan?: number[][]; // for wall data
   private allNodes: PathNode[]; // contains predetermined start, end + dummy nodes
   private greedy: GreedyHeuristics;
+  private stochastic: Stochastic;
   private end?: PathNode | null;
   error?: string;
   private distanceHeuristic?: DistanceHeuristic;
@@ -72,6 +74,7 @@ export class TSP {
     this.shortestPaths = reconstructPath ? this.createNodeMatrix([]) : undefined;
     this.calculateDistances();
     this.greedy = new GreedyHeuristics(this.costMatrix, this.isHamiltonianPathProblem());
+    this.stochastic = new Stochastic(this.costMatrix, this.isHamiltonianPathProblem());
   }
 
   /** Constructor helpers */
@@ -207,6 +210,27 @@ export class TSP {
       this.allNodes.findIndex((current: PathNode) => current.uid === node.uid),
     );
     return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+  };
+
+  /**
+   * Stochastic path-finding method.
+   *
+   * @param {number} initialTemp - optional, defaults to 1
+   * @param {number} minTemp - optional, defaults to 0.1
+   * @param {number} alpha - optional, defaults to 0.99
+   * @memberof TSP
+   * @returns {PathResult}
+   */
+  simulatedAnnealing = (initialTemp?: number, minTemp?: number, coolingRate?: number): PathResult => {
+    const { path: rawPath, estimatedCost } = this.stochastic.simualtedAnnealing({
+      initialTemp: initialTemp || 1,
+      minTemp: minTemp || 0.0001,
+      coolingRate: coolingRate || 0.99,
+    });
+    const path = this.createPathNodeArray(rawPath);
+    const result = { path, estimatedCost } as PathResult;
+    if (this.reconstructPath) result.reconstruction = this.reconstructTruePath(rawPath);
+    return result;
   };
 
   /** Main (Path) Methods helpers */
