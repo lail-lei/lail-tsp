@@ -72,8 +72,8 @@ export class Stochastic {
     let bestCost = prevCost;
 
     while (currentTemp > minTemp) {
-      let currentPath = this.swapTwo(prevPath);
-      let currentCost = this.computeCost(currentPath);
+      const currentPath = this.swapTwo(prevPath);
+      const currentCost = this.computeCost(currentPath);
 
       if (currentCost < prevCost) {
         prevPath = currentPath;
