@@ -142,6 +142,7 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
+    console.log(estimatedCost);
   });
 
   it('passes failed test 3', () => {
@@ -151,6 +152,7 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
+    console.log(estimatedCost);
   });
 
   it('passes failed test 3', () => {
@@ -159,6 +161,7 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
+    console.log(estimatedCost);
   });
 
   it('passes failed test 3', () => {
@@ -167,5 +170,6 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
+    console.log(estimatedCost);
   });
 });

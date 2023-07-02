@@ -218,14 +218,18 @@ export class TSP {
    * @param {number} initialTemp - optional, defaults to 1
    * @param {number} minTemp - optional, defaults to 0.1
    * @param {number} alpha - optional, defaults to 0.99
+   * @param {number} successesPerTemp - optional, successes to hit before cooling (defaults to 10 * list length)
+   * @param {number} maxAttemptsPerTemp - optional, how many attempts before temp must cool
    * @memberof TSP
    * @returns {PathResult}
    */
-  simulatedAnnealing = (initialTemp?: number, minTemp?: number, coolingRate?: number): PathResult => {
+  simulatedAnnealing = (initialTemp?: number, minTemp?: number, coolingRate?: number, successesPerTemp?: number, maxAttemptsPerTemp?: number): PathResult => {
     const { path: rawPath, estimatedCost } = this.stochastic.simualtedAnnealing({
       initialTemp: initialTemp || 1,
       minTemp: minTemp || 0.0001,
       coolingRate: coolingRate || 0.99,
+      successesPerTemp,
+      maxAttemptsPerTemp
     });
     const path = this.createPathNodeArray(rawPath);
     const result = { path, estimatedCost } as PathResult;

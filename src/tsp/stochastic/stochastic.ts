@@ -1,3 +1,5 @@
+import ns = require('@stdlib/random-base');
+
 export class Stochastic {
   distances: number[][];
   isHamiltonianPath: boolean;
@@ -86,10 +88,15 @@ export class Stochastic {
     initialTemp,
     minTemp,
     coolingRate,
+    successesPerTemp,
+    maxAttemptsPerTemp
   }: {
     initialTemp: number;
     minTemp: number;
     coolingRate: number;
+    successesPerTemp?: number,
+    maxAttemptsPerTemp?: number,
+
   }): { path: number[]; estimatedCost: number } {
     let initialPath = this.distances.map((_current: number[], index: number) => index);
     initialPath = this.isHamiltonianPath ? [0, ...initialPath.slice(2), 1] : [...initialPath, 0];
@@ -102,6 +109,13 @@ export class Stochastic {
     let bestPath = prevPath;
     let bestCost = prevCost;
 
+
+    const target = successesPerTemp || 10 * initialPath.length;
+    const max = maxAttemptsPerTemp || 1500;
+
+    let successes = 0;
+    let attempts = 0;
+
     while (currentTemp > minTemp) {
       const currentPath = this.generateNeighbor(prevPath);
       const currentCost = this.computeCost(currentPath);
@@ -111,7 +125,7 @@ export class Stochastic {
         prevCost = currentCost;
       } else {
         const acceptanceProbability = Math.exp(-(currentCost - prevCost) / currentTemp);
-        if (Math.random() <= acceptanceProbability) {
+        if (ns.uniform(0, 1) <= acceptanceProbability) {
           prevPath = currentPath;
           prevCost = currentCost;
         }
@@ -120,8 +134,16 @@ export class Stochastic {
       if (bestCost > prevCost) {
         bestPath = prevPath;
         bestCost = prevCost;
+        successes++;
       }
-      currentTemp *= coolingRate;
+
+      attempts++;
+
+      if (successes === target || attempts === max) {
+        currentTemp *= coolingRate;
+        successes = 0;
+        attempts = 0;
+      }
     }
 
     return { path: bestPath, estimatedCost: bestCost };

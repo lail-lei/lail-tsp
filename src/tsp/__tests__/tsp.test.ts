@@ -145,7 +145,6 @@ describe('simple test', () => {
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.nearestInsertionPath();
-    console.log(estimatedCost);
   });
   it('floorplan 1, start: 0,0 end: 25,49, farthest insertion, reconstructs path', () => {
     const tsp = new TSP({
@@ -157,7 +156,6 @@ describe('simple test', () => {
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.farthestInsertionPath();
-    console.log(estimatedCost);
   });
   it('floorplan 1, start: 0,0 end: 25,49, nearest neighbor, reconstructs path', () => {
     const tsp = new TSP({
@@ -169,6 +167,5 @@ describe('simple test', () => {
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.nearestNeighborPath();
-    console.log(estimatedCost);
   });
 });

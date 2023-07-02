@@ -42,6 +42,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
+    "@stdlib/random-base-uniform": "^0.0.6",
     "edmonds-blossom-fixed": "^1.0.1",
     "lail-astar": "^1.1.1",
     "npm": "^9.6.7"
