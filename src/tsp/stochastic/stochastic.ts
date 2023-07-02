@@ -13,26 +13,57 @@ export class Stochastic {
     this.isHamiltonianPath = isHamiltonianPath;
   }
 
-  private swapTwo(path: number[]): number[] {
+  private generateNeighbor = (path: number[]): number[] => {
     const n = path.length;
     const min = 1; // the start node (0) must be preserved
     const max = n - 2; // the last node (n - 1) must be preserved
 
+    const { index1, index2 } = this.generateSegmentIndices(min, max);
+    const coinToss = Math.floor(Math.random() * (1 - 0 + 1) + 0);
+
     const clone = [...path];
-
-    const generateRandomIndex = () => Math.floor(Math.random() * (max - min + 1) + min);
-
-    const index1 = generateRandomIndex();
-    let index2 = generateRandomIndex();
-    // ensure real swap happens
-    while (index1 === index2) index2 = generateRandomIndex();
-
-    const temp = clone[index1];
-    clone[index1] = clone[index2];
-    clone[index2] = temp;
+    coinToss === 1 ? this.transportSegment(clone, index1, index2) : this.reverseSegment(clone, index1, index2);
 
     return clone;
+  };
+
+  private generateSegmentIndices = (min: number, max: number): { index1: number; index2: number } => {
+    const generateRandomIndex = () => Math.floor(Math.random() * (max - min + 1) + min);
+    const index1 = generateRandomIndex();
+    let index2 = generateRandomIndex();
+    if (index1 === index2) index2 += 1;
+    return { index1: Math.min(index1, index2), index2: Math.max(index1, index2) };
+  };
+
+  private swap(path: number[], index1: number, index2: number) {
+    const temp = path[index1];
+    path[index1] = path[index2];
+    path[index2] = temp;
   }
+
+  private reverseSegment = (path: number[], index1: number, index2: number) => {
+    let left = index1;
+    let right = index2;
+    while (left < right) {
+      this.swap(path, left, right);
+      left++;
+      right--;
+    }
+  };
+
+  private transportSegment = (path: number[], index1: number, index2: number) => {
+    const sLength = index2 - index1;
+    const segment = path.splice(index1, sLength);
+    // insertion point cannot be the first or last number in the remainder path
+    const getInsertionPoint = () => Math.floor(Math.random() * (path.length - 2 - 1 + 1) + 1);
+    let insertionPoint = getInsertionPoint();
+    if (insertionPoint === index1) insertionPoint += 1;
+
+    const after = path.splice(insertionPoint);
+
+    path.push(...segment);
+    path.push(...after);
+  };
 
   private computeCost = (path: number[]): number => {
     let start = 0;
@@ -61,7 +92,7 @@ export class Stochastic {
     coolingRate: number;
   }): { path: number[]; estimatedCost: number } {
     let initialPath = this.distances.map((_current: number[], index: number) => index);
-    initialPath = this.isHamiltonianPath ? [0, ...initialPath.slice(2), 1] : [0, ...initialPath, 0];
+    initialPath = this.isHamiltonianPath ? [0, ...initialPath.slice(2), 1] : [...initialPath, 0];
 
     let currentTemp = initialTemp;
 
@@ -72,7 +103,7 @@ export class Stochastic {
     let bestCost = prevCost;
 
     while (currentTemp > minTemp) {
-      const currentPath = this.swapTwo(prevPath);
+      const currentPath = this.generateNeighbor(prevPath);
       const currentCost = this.computeCost(currentPath);
 
       if (currentCost < prevCost) {
