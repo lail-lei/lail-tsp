@@ -89,14 +89,13 @@ export class Stochastic {
     minTemp,
     coolingRate,
     successesPerTemp,
-    maxAttemptsPerTemp
+    maxAttemptsPerTemp,
   }: {
     initialTemp: number;
     minTemp: number;
     coolingRate: number;
-    successesPerTemp?: number,
-    maxAttemptsPerTemp?: number,
-
+    successesPerTemp?: number;
+    maxAttemptsPerTemp?: number;
   }): { path: number[]; estimatedCost: number } {
     let initialPath = this.distances.map((_current: number[], index: number) => index);
     initialPath = this.isHamiltonianPath ? [0, ...initialPath.slice(2), 1] : [...initialPath, 0];
@@ -108,7 +107,6 @@ export class Stochastic {
 
     let bestPath = prevPath;
     let bestCost = prevCost;
-
 
     const target = successesPerTemp || 10 * initialPath.length;
     const max = maxAttemptsPerTemp || 1500;

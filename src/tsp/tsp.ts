@@ -223,13 +223,19 @@ export class TSP {
    * @memberof TSP
    * @returns {PathResult}
    */
-  simulatedAnnealing = (initialTemp?: number, minTemp?: number, coolingRate?: number, successesPerTemp?: number, maxAttemptsPerTemp?: number): PathResult => {
+  simulatedAnnealing = (
+    initialTemp?: number,
+    minTemp?: number,
+    coolingRate?: number,
+    successesPerTemp?: number,
+    maxAttemptsPerTemp?: number,
+  ): PathResult => {
     const { path: rawPath, estimatedCost } = this.stochastic.simualtedAnnealing({
       initialTemp: initialTemp || 1,
       minTemp: minTemp || 0.0001,
       coolingRate: coolingRate || 0.99,
       successesPerTemp,
-      maxAttemptsPerTemp
+      maxAttemptsPerTemp,
     });
     const path = this.createPathNodeArray(rawPath);
     const result = { path, estimatedCost } as PathResult;
