@@ -15,26 +15,34 @@ export class Stochastic {
     this.isHamiltonianPath = isHamiltonianPath;
   }
 
-  private generateNeighbor = (path: number[]): number[] => {
-    const n = path.length;
-    const min = 1; // the start node (0) must be preserved
-    const max = n - 2; // the last node (n - 1) must be preserved
+  private generateRandomIndex = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
 
-    const { index1, index2 } = this.generateSegmentIndices(min, max);
+  private generateAllowableIndex = () => {
+    const min = 1; // the start node (0) must be preserved
+    const max = this.distances.length - 2; // the last node (n - 1) must be preserved
+    return this.generateRandomIndex(min, max);
+  };
+
+  private generateSegmentIndices = (): { index1: number; index2: number } => {
+    const index1 = this.generateAllowableIndex();
+    let index2 = this.generateAllowableIndex();
+    // prevent collision, so an actual segment will be selected
+    if (index1 === index2) {
+      // make sure we stay within bounds
+      if (index1 !== this.distances.length - 2) index2 = index1 + 1;
+      else index2 = index1 - 1;
+    }
+    return { index1: Math.min(index1, index2), index2: Math.max(index1, index2) };
+  };
+
+  private generateNeighbor = (path: number[]): number[] => {
+    const { index1, index2 } = this.generateSegmentIndices();
     const coinToss = Math.floor(Math.random() * (1 - 0 + 1) + 0);
 
     const clone = [...path];
     coinToss === 1 ? this.transportSegment(clone, index1, index2) : this.reverseSegment(clone, index1, index2);
 
     return clone;
-  };
-
-  private generateSegmentIndices = (min: number, max: number): { index1: number; index2: number } => {
-    const generateRandomIndex = () => Math.floor(Math.random() * (max - min + 1) + min);
-    const index1 = generateRandomIndex();
-    let index2 = generateRandomIndex();
-    if (index1 === index2) index2 += 1;
-    return { index1: Math.min(index1, index2), index2: Math.max(index1, index2) };
   };
 
   private swap(path: number[], index1: number, index2: number) {
@@ -57,12 +65,10 @@ export class Stochastic {
     const sLength = index2 - index1;
     const segment = path.splice(index1, sLength);
     // insertion point cannot be the first or last number in the remainder path
-    const getInsertionPoint = () => Math.floor(Math.random() * (path.length - 2 - 1 + 1) + 1);
+    const getInsertionPoint = () => this.generateRandomIndex(1, path.length - 2);
     let insertionPoint = getInsertionPoint();
-    if (insertionPoint === index1) insertionPoint += 1;
-
+    if (insertionPoint === index1) insertionPoint = index1 + 1;
     const after = path.splice(insertionPoint);
-
     path.push(...segment);
     path.push(...after);
   };

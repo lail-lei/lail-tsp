@@ -102,6 +102,26 @@ describe('integration', () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
+  const floorplan4 = [
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+    [1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+  ];
+
   const locations = [
     'M09',
     'Y02',
@@ -126,6 +146,40 @@ describe('integration', () => {
     'B14',
   ];
 
+  const locations2 = [
+    'E02',
+    'K07',
+    'G07',
+    'K20',
+    'B11',
+    'O15',
+    'C12',
+    'I08',
+    'J20',
+    'J18',
+    'M20',
+    'L15',
+    'A09',
+    'L14',
+    'D16',
+    'H20',
+    'Q02',
+    'D11',
+    'I03',
+    'A14',
+    'I18',
+    'L08',
+    'I16',
+    'C04',
+    'E19',
+    'P06',
+    'D19',
+    'A19',
+    'Q05',
+    'G15',
+    'L11',
+  ];
+
   it('throws error if encounters unreachable node', () => {
     const start = createPathNode('A01', LocationFormat.ALPHABETICAL_X);
     const end = createPathNode('L02', LocationFormat.ALPHABETICAL_X);
@@ -142,7 +196,7 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
-    console.log(estimatedCost);
+    console.log('farthest insertion: ', estimatedCost);
   });
 
   it('passes failed test 3', () => {
@@ -152,24 +206,53 @@ describe('integration', () => {
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
-    console.log(estimatedCost);
+    console.log('simulated annealing: ', estimatedCost);
   });
 
   it('passes failed test 3', () => {
+    const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { estimatedCost } = tsp.nearestInsertionPath();
+    console.log('nearest insertion: ', estimatedCost);
+  });
+
+  it('long list test', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
-    console.log(estimatedCost);
+    console.log('farthest insertion: ', estimatedCost);
   });
 
-  it('passes failed test 3', () => {
+  it('long list test', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
-    console.log(estimatedCost);
+    console.log('simulated annealing: ', estimatedCost);
+  });
+
+  it('long list test', () => {
+    const start = createPathNode('0,0', LocationFormat.COORDINATE);
+    const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
+    const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { estimatedCost } = tsp.nearestInsertionPath();
+    console.log('nearest insertion: ', estimatedCost);
+  });
+
+  it('passes failed test 4', () => {
+    const start = createPathNode('M20', LocationFormat.ALPHABETICAL_Y);
+    const end = createPathNode('Q03', LocationFormat.ALPHABETICAL_Y);
+    const nodes = preprocessList(locations2, LocationFormat.ALPHABETICAL_Y);
+    const tsp = new TSP({ nodes, floorplan: floorplan4, start, end });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { estimatedCost } = tsp.simulatedAnnealing();
+    console.log('simulated annealing: ', estimatedCost);
   });
 });

@@ -97,24 +97,28 @@ describe('simple test', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestNeighborPath();
+    console.log(estimatedCost);
   });
 
   it('floorplan 1, start: 0,0 end: 25,49, simulated annealing', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.simulatedAnnealing();
+    console.log(estimatedCost);
   });
 
   it('floorplan 1, start: 0,0 end: 25,49, nearest insertion', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestInsertionPath();
+    console.log(estimatedCost);
   });
 
   it('floorplan 1, start: 0,0 end: 25,49, farthest insertion', () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.farthestInsertionPath();
+    console.log(estimatedCost);
   });
 
   it('no floorplan, start: 0,0 end: 25,49, farthest insertion', () => {
