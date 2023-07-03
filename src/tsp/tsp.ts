@@ -6,6 +6,7 @@ export interface PathResult {
   path: PathNode[];
   estimatedCost: number;
   reconstruction?: PathNode[];
+  executionTimeInMS?: number;
 }
 
 /**
@@ -198,6 +199,7 @@ export class TSP {
    */
   alphanumericSort = (): PathResult => {
     if (this.error) throw new Error(this.error);
+    const startTime = Date.now();
     const sorted = this.nodes.sort((nodeA: PathNode, nodeB: PathNode) => {
       if (nodeA.uid && nodeB.uid) return nodeA.uid.localeCompare(nodeB.uid);
       return nodeA.gridId.localeCompare(nodeB.gridId);
@@ -206,10 +208,12 @@ export class TSP {
       this.end && this.isHamiltonianPathProblem()
         ? [this.start, ...sorted, this.end]
         : [this.start, ...sorted, this.start];
+    const endTime = Date.now();
     const rawPath = path.map((node: PathNode) =>
       this.allNodes.findIndex((current: PathNode) => current.uid === node.uid),
     );
-    return { path, estimatedCost: this.estimateTotalPathCost(rawPath) };
+
+    return { path, estimatedCost: this.estimateTotalPathCost(rawPath), executionTimeInMS: endTime - startTime };
   };
 
   /**
@@ -230,6 +234,8 @@ export class TSP {
     successesPerTemp?: number,
     maxAttemptsPerTemp?: number,
   ): PathResult => {
+    if (this.error) throw new Error(this.error);
+    const startTime = Date.now();
     const { path: rawPath, estimatedCost } = this.stochastic.simualtedAnnealing({
       initialTemp: initialTemp || 1,
       minTemp: minTemp || 0.0001,
@@ -238,7 +244,8 @@ export class TSP {
       maxAttemptsPerTemp,
     });
     const path = this.createPathNodeArray(rawPath);
-    const result = { path, estimatedCost } as PathResult;
+    const endTime = Date.now();
+    const result = { path, estimatedCost, executionTimeInMS: endTime - startTime } as PathResult;
     if (this.reconstructPath) result.reconstruction = this.reconstructTruePath(rawPath);
     return result;
   };
@@ -258,11 +265,17 @@ export class TSP {
    */
   private computeGreedyPath = (computePath: () => number[]): PathResult => {
     // todo - if list is sufficiently short, return list without computing
+    const startTime = Date.now();
     const rawPath = computePath();
     // connect raw path back to start node if not a hamiltonian path;
     if (!this.isHamiltonianPathProblem()) rawPath.push(0);
     const transformed = this.createPathNodeArray(rawPath);
-    const result = { path: transformed, estimatedCost: this.estimateTotalPathCost(rawPath) } as PathResult;
+    const endTime = Date.now();
+    const result = {
+      path: transformed,
+      estimatedCost: this.estimateTotalPathCost(rawPath),
+      executionTimeInMS: endTime - startTime,
+    } as PathResult;
     if (this.reconstructPath) result.reconstruction = this.reconstructTruePath(rawPath);
     return result;
   };
