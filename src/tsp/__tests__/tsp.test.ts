@@ -93,53 +93,60 @@ const nodes = [
 ];
 
 describe('simple test', () => {
-  it('floorplan 1, start: 0,0 end: 25,49, greedy path', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, greedy path', async () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestNeighborPath();
     console.log(estimatedCost);
   });
 
-  it('floorplan 1, start: 0,0 end: 25,49, simulated annealing', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, simulated annealing', async () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.simulatedAnnealing();
     console.log(estimatedCost);
   });
 
-  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion', async () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    await tsp.init();
     const { path, estimatedCost } = tsp.nearestInsertionPath();
     console.log(estimatedCost);
   });
 
-  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion', async () => {
     const tsp = new TSP({ nodes, floorplan, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.farthestInsertionPath();
     console.log(estimatedCost);
   });
 
-  it('no floorplan, start: 0,0 end: 25,49, farthest insertion', () => {
+  it('no floorplan, start: 0,0 end: 25,49, farthest insertion', async () => {
     const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.farthestInsertionPath();
   });
 
-  it('no floorplan, start: 0,0 end: 25,49, nearest insertion', () => {
+  it('no floorplan, start: 0,0 end: 25,49, nearest insertion', async () => {
     const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestInsertionPath();
   });
 
-  it('no floorplan, start: 0,0 end: 25,49, nearest neighbor', () => {
+  it('no floorplan, start: 0,0 end: 25,49, nearest neighbor', async () => {
     const tsp = new TSP({ nodes, start: new PathNode(0, 0), end: new PathNode(25, 49) });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost } = tsp.nearestNeighborPath();
   });
 
-  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion, reconstructs path', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, nearest insertion, reconstructs path', async () => {
     const tsp = new TSP({
       nodes,
       floorplan,
@@ -147,10 +154,13 @@ describe('simple test', () => {
       end: new PathNode(25, 49),
       reconstructPath: true,
     });
+
+    await tsp.init();
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.nearestInsertionPath();
   });
-  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion, reconstructs path', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, farthest insertion, reconstructs path', async () => {
     const tsp = new TSP({
       nodes,
       floorplan,
@@ -158,10 +168,11 @@ describe('simple test', () => {
       end: new PathNode(25, 49),
       reconstructPath: true,
     });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.farthestInsertionPath();
   });
-  it('floorplan 1, start: 0,0 end: 25,49, nearest neighbor, reconstructs path', () => {
+  it('floorplan 1, start: 0,0 end: 25,49, nearest neighbor, reconstructs path', async () => {
     const tsp = new TSP({
       nodes,
       floorplan,
@@ -169,6 +180,7 @@ describe('simple test', () => {
       end: new PathNode(25, 49),
       reconstructPath: true,
     });
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { path, estimatedCost, reconstruction } = tsp.nearestNeighborPath();
   });

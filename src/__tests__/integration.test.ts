@@ -184,73 +184,81 @@ describe('integration', () => {
     const start = createPathNode('A01', LocationFormat.ALPHABETICAL_X);
     const end = createPathNode('L02', LocationFormat.ALPHABETICAL_X);
     const nodes = preprocessList([...locations, 'M30'], LocationFormat.ALPHABETICAL_X);
-    expect(() => {
-      new TSP({ nodes, floorplan, start, end });
+    expect(async () => {
+      const tsp = new TSP({ nodes, floorplan, start, end });
+      await tsp.init()
     }).toThrowError(`Unreachable location encountered.`);
   });
 
-  it('passes failed test 3', () => {
+  it('passes failed test 3', async () => {
     const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
     console.log('farthest insertion: ', estimatedCost);
   });
 
-  it('passes failed test 3', () => {
+  it('passes failed test 3', async () => {
     const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);
   });
 
-  it('passes failed test 3', () => {
+  it('passes failed test 3', async () => {
     const locations = ['W06', 'C18', 'P12', 'L07', 'N03'];
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.nearestInsertionPath();
     console.log('nearest insertion: ', estimatedCost);
   });
 
-  it('long list test', () => {
+  it('long list test', async () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
     console.log('farthest insertion: ', estimatedCost);
   });
 
-  it('long list test', () => {
+  it('long list test', async () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);
   });
 
-  it('long list test', () => {
+  it('long list test', async () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.nearestInsertionPath();
     console.log('nearest insertion: ', estimatedCost);
   });
 
-  it('passes failed test 4', () => {
+  it('passes failed test 4', async () => {
     const start = createPathNode('M20', LocationFormat.ALPHABETICAL_Y);
     const end = createPathNode('Q03', LocationFormat.ALPHABETICAL_Y);
     const nodes = preprocessList(locations2, LocationFormat.ALPHABETICAL_Y);
     const tsp = new TSP({ nodes, floorplan: floorplan4, start, end });
+    await tsp.init()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);

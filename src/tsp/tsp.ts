@@ -9,6 +9,13 @@ export interface PathResult {
   executionTimeInMS?: number;
 }
 
+interface ShortestPathSegment {
+  row: number;
+  col: number;
+  estimatedCost: number;
+  path?: PathNode[]
+}
+
 /**
  * Traveling Salesperson Problem class. Takes array of locations (in PathNode format),
  * calculates distances using AStar algorithm (with configurable distance heuristic),
@@ -23,8 +30,8 @@ export class TSP {
   private costMatrix: number[][];
   private floorPlan?: number[][]; // for wall data
   private allNodes: PathNode[]; // contains predetermined start, end + dummy nodes
-  private greedy: GreedyHeuristics;
-  private stochastic: Stochastic;
+  private greedy?: GreedyHeuristics;
+  private stochastic?: Stochastic;
   private end?: PathNode | null;
   error?: string;
   private distanceHeuristic?: DistanceHeuristic;
@@ -73,9 +80,6 @@ export class TSP {
     this.reconstructPath = !!reconstructPath;
     this.costMatrix = this.createNodeMatrix(Infinity);
     this.shortestPaths = reconstructPath ? this.createNodeMatrix([]) : undefined;
-    this.calculateDistances();
-    this.greedy = new GreedyHeuristics(this.costMatrix, this.isHamiltonianPathProblem());
-    this.stochastic = new Stochastic(this.costMatrix, this.isHamiltonianPathProblem());
   }
 
   /** Constructor helpers */
@@ -92,8 +96,22 @@ export class TSP {
       .fill(undefined)
       .map(() => new Array(this.allNodes.length).fill(fill));
   };
+
   /**
-   * Calculates distances between each node in path (including start node) using AStar algorithm.
+   * Calculates initial distances between all nodes in the path, stores any reconstructed paths,
+   * and inits greedy and stochastic subclasses classes. 
+   *
+   * @private
+   * @memberof TSP
+   */
+  init = async () => {
+    await this.calculateDistances();
+    this.greedy = new GreedyHeuristics(this.costMatrix, this.isHamiltonianPathProblem());
+    this.stochastic = new Stochastic(this.costMatrix, this.isHamiltonianPathProblem());
+  }
+
+  /**
+   * Calculates distances between each node (including start node) using AStar algorithm.
    * If problem is Hamilontian path, distances between all nodes and the end node are also calculated.
    * If TSP configuration option reconstructPath is set to true, this method also stores
    * reconstructed path in this.shortestPaths
@@ -101,43 +119,72 @@ export class TSP {
    * @private
    * @memberof TSP
    */
-  private calculateDistances = () => {
-    let aStar;
-    if (this.floorPlan) aStar = new AStar(this.floorPlan);
+  private calculateDistances = async () => {
+    const aStar = this.floorPlan ? new AStar(this.floorPlan) : undefined;
 
-    for (let r = 0; r < this.allNodes.length; r++) {
-      for (let c = 0; c < this.allNodes.length; c++) {
-        if (r === c) this.costMatrix[r][c] = 0;
-        else {
-          const start = this.allNodes[r];
-          const end = this.allNodes[c];
-          let distance: number;
+    const coordinates = this.allNodes.reduce((coords: number[][], _node: PathNode, row: number) => {
+      coords.push(...this.allNodes.map((_node: PathNode, col: number) => [row, col]))
+      return coords;
+    }, [])
 
-          if (aStar) {
-            const { minCost, path } = aStar.search(start, end, this.reconstructPath, this.distanceHeuristic);
-            distance = minCost;
-            if (path && this.shortestPaths) this.shortestPaths[r][c] = path;
-          } else {
-            distance =
-              this.distanceHeuristic === DistanceHeuristic.EUCLIDEAN
-                ? start.calculateEuclideanDistance(end)
-                : start.calculateManhattenDistance(end);
-          }
+    const results = await Promise.all(coordinates.map((coords: number[]) => this.calculateShortestPathSegment(coords[0], coords[1], aStar)))
 
-          if (distance === Infinity) {
-            const unreacahbleError = `Unreachable location encountered.`;
-            this.error = unreacahbleError;
-            throw new Error(unreacahbleError);
-          } else this.costMatrix[r][c] = distance;
-        }
-      }
-    }
+    results.forEach((result: ShortestPathSegment) => {
+      const { row, col, estimatedCost, path } = result;
+
+      this.costMatrix[row][col] = estimatedCost;
+      if (this.reconstructPath && this.shortestPaths) this.shortestPaths[row][col] = path || [];
+    })
+
     // hamiltonian path problem requires a specified start and end
     if (this.isHamiltonianPathProblem()) {
       this.costMatrix[0][1] = Infinity; // start node = costMatrix[0]
       this.costMatrix[1][0] = Infinity; // end node  = costMatrix[1]
     }
   };
+
+
+  /**
+   * Calculates distances between 2 nodes using AStar algorithm (if floorplan is available).
+   * If TSP configuration option reconstructPath is set to true, this method returns stores
+   * reconstructed path 
+   * 
+   * Asynchronous to speed up engine initialization
+   * 
+   * @param {number} row - index of node that starts path segment
+   * @param {number} col - index of node that ends path segment
+   * @param {AStar} aStar - optional aStar engine
+   * @returns {Promise<ShortestPathSegment>} 
+   * 
+   * @private
+   * @memberof TSP
+   */
+  private calculateShortestPathSegment = async (row: number, col: number, aStar?: AStar): Promise<ShortestPathSegment> => {
+    return new Promise((resolve, reject) => {
+      if (row === col) return resolve({ estimatedCost: 0, path: [], row, col });
+      else {
+        const start = this.allNodes[row];
+        const end = this.allNodes[col];
+        const result = { row, col } as ShortestPathSegment;
+        if (aStar) {
+          const { minCost, path } = aStar.search(start, end, this.reconstructPath, this.distanceHeuristic);
+          result.estimatedCost = minCost;
+          if (path && this.shortestPaths) result.path = path;
+        } else {
+          result.estimatedCost =
+            this.distanceHeuristic === DistanceHeuristic.EUCLIDEAN
+              ? start.calculateEuclideanDistance(end)
+              : start.calculateManhattenDistance(end);
+        }
+        if (result.estimatedCost === Infinity) {
+          const unreacahbleError = `Unreachable location encountered.`;
+          this.error = unreacahbleError;
+          return reject(new Error(unreacahbleError));
+        }
+        else return resolve(result)
+      }
+    })
+  }
 
   /**
    * Returns true if the problem (TSP parent class) has a defined end node
@@ -159,6 +206,7 @@ export class TSP {
    */
   nearestNeighborPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
+    if (!this.greedy) throw new Error('Engine not initalized. Please call init() before computing path.');
     return this.computeGreedyPath(this.greedy.nearestNeighborPath);
   };
 
@@ -172,6 +220,7 @@ export class TSP {
    */
   nearestInsertionPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
+    if (!this.greedy) throw new Error('Engine not initalized. Please call init() before computing path.');
     return this.computeGreedyPath(this.greedy.nearestInsertionPath);
   };
 
@@ -185,6 +234,7 @@ export class TSP {
    */
   farthestInsertionPath = (): PathResult => {
     if (this.error) throw new Error(this.error);
+    if (!this.greedy) throw new Error('Engine not initalized. Please call init() before computing path.');
     return this.computeGreedyPath(this.greedy.farthestInsertionPath);
   };
 
@@ -235,6 +285,7 @@ export class TSP {
     maxAttemptsPerTemp?: number,
   ): PathResult => {
     if (this.error) throw new Error(this.error);
+    if (!this.stochastic) throw new Error('Engine not initalized. Please call init() before computing path.');
     const startTime = Date.now();
     const { path: rawPath, estimatedCost } = this.stochastic.simualtedAnnealing({
       initialTemp: initialTemp || 1,
