@@ -186,7 +186,7 @@ describe('integration', () => {
     const nodes = preprocessList([...locations, 'M30'], LocationFormat.ALPHABETICAL_X);
     expect(async () => {
       const tsp = new TSP({ nodes, floorplan, start, end });
-      await tsp.init()
+      await tsp.init();
     }).toThrowError(`Unreachable location encountered.`);
   });
 
@@ -195,7 +195,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
     console.log('farthest insertion: ', estimatedCost);
@@ -206,7 +206,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);
@@ -217,7 +217,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.nearestInsertionPath();
     console.log('nearest insertion: ', estimatedCost);
@@ -227,7 +227,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.farthestInsertionPath();
     console.log('farthest insertion: ', estimatedCost);
@@ -237,7 +237,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);
@@ -247,7 +247,7 @@ describe('integration', () => {
     const start = createPathNode('0,0', LocationFormat.COORDINATE);
     const nodes = preprocessList(locations, LocationFormat.ALPHABETICAL_X);
     const tsp = new TSP({ nodes, floorplan: floorplan2, start });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.nearestInsertionPath();
     console.log('nearest insertion: ', estimatedCost);
@@ -258,7 +258,7 @@ describe('integration', () => {
     const end = createPathNode('Q03', LocationFormat.ALPHABETICAL_Y);
     const nodes = preprocessList(locations2, LocationFormat.ALPHABETICAL_Y);
     const tsp = new TSP({ nodes, floorplan: floorplan4, start, end });
-    await tsp.init()
+    await tsp.init();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { estimatedCost } = tsp.simulatedAnnealing();
     console.log('simulated annealing: ', estimatedCost);
