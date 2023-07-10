@@ -180,14 +180,12 @@ describe('integration', () => {
     'L11',
   ];
 
-  it('throws error if encounters unreachable node', () => {
+  it('throws error if encounters unreachable node', async () => {
     const start = createPathNode('A01', LocationFormat.ALPHABETICAL_X);
     const end = createPathNode('L02', LocationFormat.ALPHABETICAL_X);
     const nodes = preprocessList([...locations, 'M30'], LocationFormat.ALPHABETICAL_X);
-    expect(async () => {
-      const tsp = new TSP({ nodes, floorplan, start, end });
-      await tsp.init();
-    }).toThrowError(`Unreachable location encountered.`);
+    const tsp = new TSP({ nodes, floorplan, start, end });
+    await expect(tsp.init()).rejects.toThrowError(`Unreachable location encountered.`);
   });
 
   it('passes failed test 3', async () => {
